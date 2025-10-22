@@ -1,5 +1,17 @@
 import axios from "@/lib/axios";
-import { ProductWithVariantType } from "@/types/product";
+import {
+  ProductWithVariantType,
+  ProductCardType,
+  ProductFilters,
+  ProductsResponse,
+} from "@/types/product";
+import {
+  ProductPageData,
+  ProductPageDataResponse,
+  FilteredSizesApiResponse,
+  FilteredSizesResponse,
+  SizeFilters,
+} from "@/types/product";
 
 export async function getAllStoreProducts(storeUrl: string) {
   const res = await axios.get(`/api/v1/stores/${storeUrl}/products`);
@@ -79,7 +91,160 @@ export const upsertProduct = async (
   }
 };
 
-// Delete Category
+// Function: getProducts
+// Description: Retrieves products based on various filters and returns only variants that match the filters. Supports pagination.
+// Access Level: Public
+// Parameters:
+//   - filters: An object containing filter options (category, subCategory, offerTag, size, onSale, onDiscount, brand, color).
+//   - sortBy: Sort the filtered results (Most popular, New Arivals, Top Rated...).
+//   - page: The current page number for pagination (default = 1).
+//   - pageSize: The number of products per page (default = 10).
+// Returns: An object containing paginated products, filtered variants, and pagination metadata (totalPages, currentPage, pageSize, totalCount).
+
+export async function getProducts(
+  filters: ProductFilters = {},
+  sortBy: string = "",
+  page: number = 1,
+  pageSize: number = 10
+): Promise<{
+  products: ProductCardType[];
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+  totalCount: number;
+}> {
+  try {
+    const params = new URLSearchParams();
+
+    // Add filters
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        if (Array.isArray(value)) {
+          value.forEach((v) => params.append(key, v));
+        } else {
+          params.append(key, value.toString());
+        }
+      }
+    });
+
+    // Add other parameters
+    if (sortBy) params.append("sortBy", sortBy);
+    params.append("page", page.toString());
+    params.append("pageSize", pageSize.toString());
+
+    console.log("Making API call to:", `/api/v1/products?${params.toString()}`);
+
+    const response = await axios.get(`/api/v1/products?${params.toString()}`, {
+      timeout: 10000, // 10 second timeout
+      validateStatus: (status) => status < 500, // Don't throw on 4xx errors
+    });
+
+    console.log("API Response status:", response.status);
+    console.log("API Response data:", response.data);
+
+    // Check if the response indicates success
+    if (response.data.success === false) {
+      throw new Error(
+        response.data.error || "API returned unsuccessful response"
+      );
+    }
+
+    // Make sure the data structure matches what we expect
+    if (!response.data.data) {
+      throw new Error("Invalid API response structure: missing data field");
+    }
+
+    return response.data.data;
+  } catch (error: any) {
+    console.error("Error in getProducts function:");
+    console.error(" - Message:", error.message);
+    console.error(" - Response data:", error.response?.data);
+    console.error(" - Response status:", error.response?.status);
+    console.error(" - Request URL:", error.config?.url);
+
+    // Throw a more descriptive error
+    if (error.response?.data?.error) {
+      throw new Error(`Products API Error: ${error.response.data.error}`);
+    }
+
+    if (error.code === "ECONNABORTED") {
+      throw new Error("Request timeout - please try again");
+    }
+
+    throw new Error(`Failed to fetch products: ${error.message}`);
+  }
+}
+
+export async function getFilteredSizes(
+  filters: SizeFilters = {},
+  take: number = 10
+): Promise<FilteredSizesResponse> {
+  const params = new URLSearchParams();
+
+  // Add filters
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      params.append(key, value.toString());
+    }
+  });
+
+  // Add take parameter
+  params.append("take", take.toString());
+
+  const response = await axios.get<FilteredSizesApiResponse>(
+    `/api/v1/products/filtered-sizes?${params}`
+  );
+
+  return response.data.data;
+}
+
+// Function: getProductPageData
+// Description: Retrieves details of a specific product variant from the database.
+// Access Level: Public
+// Parameters:
+//   - productId: The slug of the product to which the variant belongs.
+//   - variantId: The slug of the variant to be retrieved.
+// Returns: Details of the requested product variant.
+export async function getProductPageData(
+  productSlug: string,
+  variantSlug: string
+): Promise<ProductPageData> {
+  const response = await axios.get<ProductPageDataResponse>(
+    `/api/v1/products/${productSlug}/${variantSlug}/page-data`
+  );
+
+  if (!response.data.success) {
+    throw new Error(response.data.error || "Failed to fetch product data");
+  }
+
+  return response.data.data;
+}
+
+export async function handleProductPage(productSlug: string): Promise<{
+  redirect: string;
+  product?: any;
+  firstVariant?: any;
+}> {
+  const response = await axios.get(
+    `/api/v1/products/${productSlug}/handle-page`
+  );
+
+  if (!response.data.success) {
+    // If API returns a redirect, use it
+    if (response.data.redirect) {
+      return { redirect: response.data.redirect };
+    }
+    throw new Error(response.data.error || "Failed to handle product page");
+  }
+
+  return {
+    redirect: response.data.redirect!,
+    product: response.data.data?.product,
+    firstVariant: response.data.data?.firstVariant,
+  };
+}
+
+// Delete Prouct
 export async function deleteProduct(id: string | number) {
   const response = await axios.delete(`/api/v1/categories/${id}`);
   return response.data;

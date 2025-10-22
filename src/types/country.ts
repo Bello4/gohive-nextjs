@@ -4,6 +4,8 @@ export interface Country {
   id: number;
   name: string;
   code: string;
+  city: string;
+  region: string;
 }
 
 export type CountryWithShippingRatesType = {

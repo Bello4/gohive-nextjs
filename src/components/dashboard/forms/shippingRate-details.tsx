@@ -290,7 +290,7 @@ const ShippingRateDetails: FC<ShippingRateDetailsProps> = ({
                           onValueChange={field.onChange}
                           min={1}
                           className="pl-2 !shadow-none rounded-md"
-                          placeholder="Minimum Delivery time (days)"
+                          placeholder="Minimum Delivery time (minutes)"
                         />
                       </FormControl>
                       <FormMessage />
@@ -310,7 +310,7 @@ const ShippingRateDetails: FC<ShippingRateDetailsProps> = ({
                           onValueChange={field.onChange}
                           min={1}
                           className="pl-2 !shadow-none rounded-md"
-                          placeholder="Maximum Delivery time (days)"
+                          placeholder="Maximum Delivery time (minutes)"
                         />
                       </FormControl>
                       <FormMessage />

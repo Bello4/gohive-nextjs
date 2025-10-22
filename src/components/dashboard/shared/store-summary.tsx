@@ -1,11 +1,10 @@
 import PaymentStatusTag from "@/components/shared/payment-status";
-import {
-  AdminStoreType,
-  OrderStatus,
-  PaymentStatus,
-  ProductStatus,
-  StoreStatus,
-} from "@/lib/types";
+
+import { AdminStoreType } from "@/types/store";
+import { StoreStatus } from "@/types/store";
+import { OrderStatus } from "@/types/order";
+import { PaymentStatus } from "@/types/payment";
+import { ProductStatus } from "@/types/product";
 import { cn, getShippingDatesRange } from "@/lib/utils";
 import { FC, useState } from "react";
 import OrderStatusSelect from "../forms/order-status-select";
@@ -38,8 +37,8 @@ const StoreSummary: FC<Props> = ({ store }) => {
           <Image
             src={store.cover}
             alt=""
-            width={1000}
-            height={400}
+            width={1200}
+            height={1200}
             className="w-full h-80 object-cover rounded-md"
           />
           <Image
@@ -95,14 +94,14 @@ const StoreSummary: FC<Props> = ({ store }) => {
         {/* Shipping details table */}
         <div>
           <h2 className="mb-4 text-2xl font-semibold leading-tight text-gray-500">
-            Shipping Details
+            Delivery Details
           </h2>
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <tbody>
                 <tr className="border-b border-opacity-20 ">
                   <td className="p-3">
-                    <p className="font-semibold">Shipping Service</p>
+                    <p className="font-semibold">Delivery Service</p>
                   </td>
                   <td className="p-3">
                     <p>{store.defaultShippingService || "-"}</p>
@@ -110,52 +109,52 @@ const StoreSummary: FC<Props> = ({ store }) => {
                 </tr>
                 <tr className="border-b border-opacity-20 ">
                   <td className="p-3">
-                    <p className="font-semibold">Shipping Fee per item</p>
+                    <p className="font-semibold">Delivery Fee per item</p>
                   </td>
                   <td className="p-3">
-                    <p>${store.defaultShippingFeePerItem}</p>
+                    <p>₦{store.defaultShippingFeePerItem}</p>
                   </td>
                 </tr>
                 <tr className="border-b border-opacity-20 s">
                   <td className="p-3">
                     <p className="font-semibold">
-                      Shipping Fee for additional item
+                      Delivery Fee for additional item
                     </p>
                   </td>
                   <td className="p-3">
-                    <p>${store.defaultShippingFeeForAdditionalItem}</p>
+                    <p>₦{store.defaultShippingFeeForAdditionalItem}</p>
                   </td>
                 </tr>
                 <tr className="border-b border-opacity-20 ">
                   <td className="p-3">
-                    <p className="font-semibold">Shipping Fee per kg</p>
+                    <p className="font-semibold">Delivery Fee per kg</p>
                   </td>
                   <td className="p-3">
-                    <p>${store.defaultShippingFeePerKg}</p>
-                  </td>
-                </tr>
-                <tr className="border-b border-opacity-20 ">
-                  <td className="p-3">
-                    <p className="font-semibold">Shipping fee fixed</p>
-                  </td>
-                  <td className="p-3">
-                    <p>${store.defaultShippingFeeFixed}</p>
+                    <p>₦{store.defaultShippingFeePerKg}</p>
                   </td>
                 </tr>
                 <tr className="border-b border-opacity-20 ">
                   <td className="p-3">
-                    <p className="font-semibold">Shipping Delivery min days</p>
+                    <p className="font-semibold">Delivery fee fixed</p>
                   </td>
                   <td className="p-3">
-                    <p>{store.defaultDeliveryTimeMin} days</p>
+                    <p>₦{store.defaultShippingFeeFixed}</p>
                   </td>
                 </tr>
                 <tr className="border-b border-opacity-20 ">
                   <td className="p-3">
-                    <p className="font-semibold">Shipping Delivery max days</p>
+                    <p className="font-semibold">Min Delivery Time</p>
                   </td>
                   <td className="p-3">
-                    <p>{store.defaultDeliveryTimeMax} days</p>
+                    <p>{store.defaultDeliveryTimeMin} Minutes</p>
+                  </td>
+                </tr>
+                <tr className="border-b border-opacity-20 ">
+                  <td className="p-3">
+                    <p className="font-semibold">Max Delivery Minutes</p>
+                  </td>
+                  <td className="p-3">
+                    <p>{store.defaultDeliveryTimeMax} Minutes</p>
                   </td>
                 </tr>
                 <tr className="border-b border-opacity-20 ">

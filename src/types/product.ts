@@ -1,4 +1,65 @@
 import { ShippingFeeMethod } from "./shippingmethod";
+import { Review } from "./review";
+import { Spec } from "./spec";
+import { Color } from "./color";
+import { Question } from "./question";
+
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  slug: string;
+  brand: string;
+  rating: number;
+  sales: number;
+  numReviews: number;
+  shippingFeeMethod: ShippingFeeMethod;
+  views: number;
+  freeShippingForAllCountries: boolean;
+  createdAt: string;
+  updatedAt: string;
+  storeId: string;
+  categoryId: string;
+  subCategoryId: string;
+  offerTagId: string | null;
+
+  // Relationships (optional)
+  // store?: Store;
+  // category?: Category;
+  // subCategory?: SubCategory;
+  // offerTag?: OfferTag;
+  // variants?: ProductVariant[];
+  // specs?: Spec[];
+  // questions?: Question[];
+  // reviews?: Review[];
+  // wishlist?: Wishlist[];
+  // freeShipping?: FreeShipping;
+}
+
+export interface ProductVariant {
+  id: string;
+  variantName: string;
+  variantDescription: string | null;
+  variantImage: string;
+  slug: string;
+  isSale: boolean;
+  saleEndDate: string | null;
+  sku: string;
+  keywords: string;
+  sales: number;
+  weight: number;
+  productId: string;
+  createdAt: string;
+  updatedAt: string;
+
+  // Relationships (optional)
+  // product?: Product;
+  // sizes?: Size[];
+  // images?: ProductVariantImage[];
+  // colors?: Color[];
+  // specs?: Spec[];
+  // wishlist?: Wishlist[];
+}
 
 // Product + variant
 export type ProductWithVariantType = {
@@ -50,4 +111,336 @@ export enum ProductStatus {
   PartiallyShipped = "PartiallyShipped",
   ExchangeRequested = "ExchangeRequested",
   AwaitingPickup = "AwaitingPickup",
+}
+
+export interface Size {
+  id: string;
+  size: string;
+  price: number;
+  discount: number;
+  quantity: number;
+}
+
+export interface ProductVariantImage {
+  id: string;
+  url: string;
+  alt?: string;
+}
+
+export interface VariantSimplified {
+  variantId: string;
+  variantSlug: string;
+  variantName: string;
+  images: ProductVariantImage[];
+  sizes: Size[];
+}
+
+export interface VariantImageType {
+  url: string;
+  image: string;
+}
+
+export type FiltersQueryType = {
+  search: string;
+  category: string;
+  subCategory: string;
+  offer: string;
+  size: string;
+  sort: string;
+};
+
+export interface ProductType {
+  id: string;
+  slug: string;
+  name: string;
+  rating: number;
+  sales: number;
+  numReviews: number;
+  variants: VariantSimplified[];
+  variantImages: VariantImageType[];
+}
+
+export interface ProductCardType {
+  id: string;
+  slug: string;
+  name: string;
+  rating: number;
+  sales: number;
+  numReviews: number;
+  variants: VariantSimplified[];
+  variantImages: VariantImageType[];
+}
+
+export type CartProductType = {
+  productId: string;
+  variantId: string;
+  productSlug: string;
+  variantSlug: string;
+  name: string;
+  variantName: string;
+  image: string;
+  variantImage: string;
+  sizeId: string;
+  size: string;
+  quantity: number;
+  price: number;
+  stock: number;
+  weight: number;
+  shippingMethod: string;
+  shippingService: string;
+  shippingFee: number;
+  extraShippingFee: number;
+  deliveryTimeMin: number;
+  deliveryTimeMax: number;
+  isFreeShipping: boolean;
+};
+
+export interface ProductFilters {
+  store?: string;
+  category?: string;
+  subCategory?: string;
+  size?: string[];
+  offer?: string;
+  search?: string;
+}
+
+export interface ProductsResponse {
+  success: boolean;
+  data: {
+    products: ProductCardType[];
+    totalPages: number;
+    currentPage: number;
+    pageSize: number;
+    totalCount: number;
+  };
+  error?: string;
+}
+
+// types/product.ts
+export interface SizeFilter {
+  size: string;
+}
+
+export interface FilteredSizesResponse {
+  sizes: SizeFilter[];
+  count: number;
+}
+
+export interface SizeFilters {
+  category?: string;
+  subCategory?: string;
+  offer?: string;
+  storeUrl?: string;
+}
+
+export interface FilteredSizesApiResponse {
+  success: boolean;
+  data: FilteredSizesResponse;
+  error?: string;
+}
+
+// types/product.ts
+export interface ProductPageData {
+  productId: string;
+  variantId: string;
+  productSlug: string;
+  variantSlug: string;
+  name: string;
+  description: string;
+  variantName: string;
+  questions: Question[];
+  sizes: Size[];
+  product: {
+    id: string;
+    name: string;
+    description: string;
+    slug: string;
+    brand: string;
+    rating: number;
+    sales: number;
+    numReviews: number;
+    views: number;
+    shippingFeeMethod: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+  variantInfo: {
+    id: string;
+    variantName: string;
+    variantDescription: string | null;
+    variantImage: string;
+    slug: string;
+    isSale: boolean;
+    saleEndDate: string | null;
+    sku: string;
+    keywords: string;
+    sales: number;
+    weight: number;
+    sizes: Size[];
+    images: ProductVariantImage[];
+    colors: Color[];
+    specs: Spec[];
+  } | null;
+  store: {
+    id: string;
+    name: string;
+    url: string;
+    logo: string | null;
+    averageRating: number;
+    numReviews: number;
+    followersCount: number;
+    isUserFollowing: boolean;
+  };
+  category: {
+    id: string;
+    name: string;
+    url: string;
+  } | null;
+  subCategory: {
+    id: string;
+    name: string;
+    url: string;
+  } | null;
+  offerTag: {
+    id: string;
+    name: string;
+    url: string;
+  } | null;
+  shippingDetails: {
+    shippingFee: number;
+    extraShippingFee: number;
+    isFreeShipping: boolean;
+    deliveryTimeMin: number;
+    deliveryTimeMax: number;
+    shippingService: string;
+  };
+  reviewsStatistics: {
+    averageRating: number;
+    totalReviews: number;
+    ratingDistribution: {
+      [key: number]: {
+        count: number;
+        percentage: number;
+      };
+    };
+  };
+  specs: {
+    product: {
+      name: string;
+      id: string;
+      createdAt: Date;
+      updatedAt: Date;
+      productId: string | null;
+      variantId: string | null;
+      value: string;
+    }[];
+    variant: {
+      name: string;
+      id: string;
+      createdAt: Date;
+      updatedAt: Date;
+      productId: string | null;
+      variantId: string | null;
+      value: string;
+    }[];
+  };
+  reviews: Review[];
+}
+
+export interface getProductPageData {
+  productId: string;
+  variantId: string;
+  productSlug: string;
+  variantSlug: string;
+  name: string;
+  description: string;
+  variantName: string;
+  variantDescription: string | null;
+  images: {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    url: string;
+    order: number | null;
+    productVariantId: string;
+    alt: string;
+  }[];
+  category: {
+    name: string;
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    url: string;
+    featured: boolean;
+    image: string;
+  };
+  subCategory: {
+    name: string;
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    url: string;
+    featured: boolean;
+    image: string;
+    categoryId: string;
+  };
+
+  variantsInfo: {
+    variantName: string;
+    variantSlug: string;
+    variantImage: string;
+    variantUrl: string;
+    images: {
+      id: string;
+      createdAt: Date;
+      updatedAt: Date;
+      url: string;
+      order: number | null;
+      productVariantId: string;
+      alt: string;
+    }[];
+    sizes: {
+      id: string;
+      createdAt: Date;
+      updatedAt: Date;
+      size: string;
+      quantity: number;
+      discount: number;
+      price: number;
+      productVariantId: string;
+    }[];
+    colors: {
+      name: string;
+      id: string;
+      createdAt: Date;
+      updatedAt: Date;
+      productVariantId: string;
+    }[];
+  }[];
+  store: {
+    name: string;
+    id: string;
+    email: string;
+    userId: string;
+    url: string;
+    logo: string | null;
+    averageRating: number;
+    numReviews: number;
+    followersCount: number;
+    isUserFollowing: boolean;
+  };
+
+  offerTagId: string | null;
+}
+
+export interface ProductPageDataResponse {
+  success: boolean;
+  data: ProductPageData;
+  error?: string;
+}
+
+export interface RatingStatistic {
+  rating: number;
+  numReviews: number;
+  percentage: number;
 }

@@ -51,12 +51,13 @@ import { deleteStore } from "@/queries/store";
 import { ColumnDef } from "@tanstack/react-table";
 
 // Prisma models
-import { StoreStatus, Store } from "@/types/store";
+import { StoreStatus, AdminStoreType } from "@/types/store";
+// import { AdminStoreType } from "@/types/store";
 // import { AdminStoreType, StoreStatus } from "@/lib/types";
 import StoreStatusSelect from "@/components/dashboard/forms/store-status-select";
 import StoreSummary from "@/components/dashboard/shared/store-summary";
 
-export const columns: ColumnDef<Store>[] = [
+export const columns: ColumnDef<AdminStoreType>[] = [
   {
     accessorKey: "cover",
     header: "",
@@ -66,8 +67,8 @@ export const columns: ColumnDef<Store>[] = [
           <Image
             src={row.original.cover}
             alt=""
-            width={500}
-            height={300}
+            width={1200}
+            height={1200}
             className="w-96 h-40 rounded-md object-cover shadow-sm"
           />
           <Image

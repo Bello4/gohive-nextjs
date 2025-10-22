@@ -235,7 +235,7 @@ const StoreDefaultShippingDetails: FC<StoreDefaultShippingDetailsProps> = ({
                   name="defaultDeliveryTimeMin"
                   render={({ field }) => (
                     <FormItem className="flex-1">
-                      <FormLabel>Minimum Delivery time (days)</FormLabel>
+                      <FormLabel>Minimum Delivery time (minutes)</FormLabel>
                       <FormControl>
                         <NumberInput
                           defaultValue={field.value}
@@ -254,7 +254,7 @@ const StoreDefaultShippingDetails: FC<StoreDefaultShippingDetailsProps> = ({
                   name="defaultDeliveryTimeMax"
                   render={({ field }) => (
                     <FormItem className="flex-1">
-                      <FormLabel>Maximum Delivery time (days)</FormLabel>
+                      <FormLabel>Maximum Delivery time (minutes)</FormLabel>
 
                       <FormControl>
                         <NumberInput

@@ -2,6 +2,7 @@ import axios from "@/lib/axios";
 import { StoreOrderType } from "@/types/order";
 import { ShippingRate } from "@/types/shippingrates";
 import { StoreDetails } from "@/types/store";
+import { FollowStoreResponse } from "@/types/store";
 
 // Or using the function directly
 export async function getStoreByUrl(storeUrl: string): Promise<StoreDetails> {
@@ -95,6 +96,21 @@ export async function updateStoreDefaultShippingDetails(
     `/api/stores/${storeUrl}/shipping-details/update`,
     shippingDetails
   );
+  return response.data.data;
+}
+
+export async function followStore(storeId: string): Promise<{
+  isFollowing: boolean;
+  followersCount: number;
+}> {
+  const response = await axios.post<FollowStoreResponse>(
+    `/api/v1/stores/${storeId}/follow`
+  );
+
+  if (!response.data.success) {
+    throw new Error(response.data.error || "Failed to toggle follow status");
+  }
+
   return response.data.data;
 }
 

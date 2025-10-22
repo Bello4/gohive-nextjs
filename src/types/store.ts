@@ -1,3 +1,5 @@
+import { Status, Role } from "./user";
+
 export interface Store {
   id: number;
   name: string;
@@ -55,6 +57,51 @@ export interface StoreDetails {
   defaultDeliveryTimeMax: number;
   userId: number;
 }
+
+export type AdminStoreType = {
+  user: {
+    name: string;
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    email: string;
+    picture: string;
+    status: Status;
+    role: Role;
+    type: string | null;
+    address: string | null;
+    state: string | null;
+    country: string | null;
+    passport: string | null;
+    phone: string | null;
+    nin: string | null;
+    password: string | null;
+  };
+} & {
+  name: string;
+  id: number;
+  returnPolicy: string;
+  createdAt: Date;
+  updatedAt: Date;
+  email: string;
+  status: StoreStatus;
+  phone: string;
+  description: string;
+  url: string;
+  logo: string;
+  cover: string;
+  averageRating: number;
+  numReviews: number;
+  featured: boolean;
+  defaultShippingService: string;
+  defaultShippingFeePerItem: number;
+  defaultShippingFeeForAdditionalItem: number;
+  defaultShippingFeePerKg: number;
+  defaultShippingFeeFixed: number;
+  defaultDeliveryTimeMin: number;
+  defaultDeliveryTimeMax: number;
+  userId: number;
+};
 
 export interface StoreProductType {
   id: number | string;
@@ -128,3 +175,30 @@ export type StoreDefaultShippingType = {
   defaultDeliveryTimeMin: number;
   defaultDeliveryTimeMax: number;
 };
+
+export interface StorePageDetails {
+  id: string;
+  name: string;
+  description: string | null;
+  logo: string | null;
+  cover: string | null;
+  averageRating: number;
+  numReviews: number;
+}
+
+export interface StorePageDetailsResponse {
+  success: boolean;
+  data: StorePageDetails;
+  error?: string;
+}
+
+// types/store.ts
+export interface FollowStoreResponse {
+  success: boolean;
+  message: string;
+  data: {
+    isFollowing: boolean;
+    followersCount: number;
+  };
+  error?: string;
+}

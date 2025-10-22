@@ -12,3 +12,10 @@ export enum Status {
   ACTIVE = "ACTIVE",
   INACTIVE = "INACTIVE",
 }
+
+export enum Role {
+  USER = "USER",
+  DRIVER = "DRIVER",
+  ADMIN = "ADMIN",
+  SELLER = "SELLER",
+}

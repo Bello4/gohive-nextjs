@@ -4,6 +4,7 @@ import Image from "next/image";
 
 // Logo image
 import LogoImg from "../../../public/assets/icons/logo-small.png";
+import LogoWhite from "../../../public/assets/icons/dashboard.png";
 
 interface LogoProps {
   width: string;
@@ -12,9 +13,9 @@ interface LogoProps {
 
 const Logo: FC<LogoProps> = ({ width, height }) => {
   return (
-    <div className="z-50" style={{ width: width, height: height }}>
+    <div className="pl-6 z-50" style={{ width: width, height: height }}>
       <Image
-        src={LogoImg}
+        src={LogoWhite}
         alt="GoHive"
         className="w-full h-full object-cover overflow-visible"
       />
