@@ -41,7 +41,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     //   });
 
     try {
-      const res = await axios.post("/register", props);
+      const res = await axios.post("api/v1/register", props);
 
       // Refresh user data
       await mutate();

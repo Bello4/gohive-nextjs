@@ -1,4 +1,4 @@
-import FollowingContainer from "@/components/store/profile/following/container";
+import FollowingContainer from "@/components/home/profile/following/container";
 import { getUserFollowedStores } from "@/queries/profile";
 
 export default async function ProfileFollowingPage({

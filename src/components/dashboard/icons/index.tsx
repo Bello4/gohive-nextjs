@@ -10,6 +10,7 @@ import SettingsIcon from "./settings";
 import ThreeBoxesIcon from "./three-boxes";
 import ProductsIcon from "./products";
 import InventoryIcon from "./inventory";
+import ReviewIcon from "./review";
 import CouponIcon from "./coupon";
 import ShippingIcon from "./shipping";
 import OfferIcon from "./offer";
@@ -19,6 +20,7 @@ export {
   DriverIcon,
   StoreIcon,
   CreateStoreIcon,
+  ReviewIcon,
   BoxListIcon,
   SettingsIcon,
   BoxesIcon,

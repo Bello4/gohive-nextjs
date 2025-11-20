@@ -1,9 +1,15 @@
 import axios from "@/lib/axios";
 
 // Get all Categories
-export async function getAllOfferTags() {
-  const response = await axios.get("/api/v1/offerTags");
-  return response.data.offerTags; // 👈 plural
+// export async function getAllOfferTags(storeUrl?: string) {
+//   const response = await axios.get("/api/v1/offerTags");
+//   return response.data.offerTags; // 👈 plural
+// }
+
+export async function getAllOfferTags(storeUrl?: string) {
+  const params = storeUrl ? { url: storeUrl } : {};
+  const response = await axios.get("/api/v1/getoffertags", { params });
+  return response.data.data; // Adjust based on actual response
 }
 
 // Get a Category

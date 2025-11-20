@@ -1,5 +1,5 @@
-import ApplySellerMultiForm from "@/components/store/forms/apply-seller/apply-seller";
-import MinimalHeader from "@/components/store/layout/minimal-header/header";
+import ApplySellerMultiForm from "@/components/home/forms/apply-seller/apply-seller";
+import MinimalHeader from "@/components/home/layout/minimal-header/header";
 
 export default function SellerApplyPage() {
   return (

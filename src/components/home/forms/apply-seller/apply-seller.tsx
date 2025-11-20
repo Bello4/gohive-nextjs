@@ -1,5 +1,5 @@
 "use client";
-import { StoreType } from "@/lib/types";
+import { StoreType } from "@/types/store";
 import { useState } from "react";
 import Instructions from "./instructions";
 import ProgressBar from "./progress-bar";
@@ -9,7 +9,7 @@ import Step3 from "./steps/setp-3/step-3";
 import Step4 from "./steps/step-4/step-4";
 
 export default function ApplySellerMultiForm() {
-  const [step, setStep] = useState<number>(4);
+  const [step, setStep] = useState<number>(1);
 
   const [formData, setFormData] = useState<StoreType>({
     name: "",

@@ -1,6 +1,6 @@
 import { ShippingFeeMethod } from "@/types/shippingmethod";
 import * as z from "zod";
-
+import { FormDispatchStatus } from "@/types/dispatch";
 // Validation schema
 export const UserFormSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -17,49 +17,29 @@ export const UserFormSchema = z.object({
   // ]),
   status: z.enum(["ACTIVE", "INACTIVE"]),
 });
+
+// export const DispatchFormSchema = z.object({
+//   status: z.nativeEnum(FormDispatchStatus, {
+//     errorMap: () => ({ message: "Please select a valid status" }),
+//   }),
+//   driverId: z.string().optional(),
+// });
+
 // Dispatch form schema
 export const DispatchFormSchema = z.object({
-  name: z
-    .string("Dispatch nale must be a string.")
-    .min(2, { message: "Dispatch name must be at least 2 characters long." })
-    .max(50, { message: "Dispatch name cannot exceed 50 characters." })
-    .regex(/^[a-zA-Z0-9\s]+$/, {
-      message:
-        "Only letters, numbers, and spaces are allowed in the Dispatch name.",
-    }),
-  recieverName: z
-    .string({
-      required_error: "Reciever name is required.",
-      invalid_type_error: "Reciever name must be a string.",
-    })
-    .min(2, { message: "Reciever name must be at least 2 characters long." })
-    .max(50, { message: "Reciever name cannot exceed 50 characters." })
-    .regex(/^[a-zA-Z0-9\s]+$/, {
-      message:
-        "Only letters, numbers, and spaces are allowed in the Dispatch name.",
-    }),
-  phone: z
-    .string({
-      required_error: "Reciever Call Number is required",
-      invalid_type_error: "Reciever Phone must be a Call Number",
-    })
-    .min(10, { message: "Reciever Phone must be at least 2 characters long." })
-    .max(50, { message: "Reciever Phone cannot exceed 50 characters." })
-    .regex(/^(?!.*(?:[-_ ]){2,})[a-zA-Z0-9_-]+$/, {
-      message:
-        "Only letters, numbers, hyphen, and underscore are allowed in the Reciever Phone, and consecutive occurrences of hyphens, underscores, or spaces are not permitted.",
-    }),
-  weight: z.number().min(0.01, {
-    message: "Please provide a valid item weight.",
-  }),
   status: z.enum([
-    "Pending",
-    "Accepted",
-    "InProgress",
-    "Completed",
-    "Cancelled",
+    "pending",
+    "searching_driver",
+    "driver_assigned",
+    "arrived_at_pickup",
+    "package_picked_up",
+    "in_transit",
+    "delivered",
+    "cancelled",
+    "failed",
   ]),
-  driverId: z.number(),
+  driverId: z.string().optional(),
+  code: z.string().optional(),
 });
 
 // Catgeory form schema

@@ -4,34 +4,72 @@ import { MessageIcon, OrderIcon, WishlistIcon } from "@/components/home/icons";
 import { Button } from "@/components/home/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-// import { SignOutButton, UserButton } from "@clerk/nextjs";
 import { useAuth } from "@/hooks/auth";
-
-import { ChevronDown, UserIcon } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { ChevronDown, UserIcon, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function UserMenu() {
-  // Get the current user
-  //   import { useAuth } from "@/hooks/auth";
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+
   const { user, logout } = useAuth();
-  const role = user?.data.role;
+  const role = user?.data?.role;
+
+  // Close modal when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        setIsModalOpen(false);
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isModalOpen]);
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   console.log(role);
+
   return (
-    <div className="relative group">
+    <div className="relative" ref={modalRef}>
       {/* Trigger */}
       <div>
         {user ? (
-          <Image
-            src={user.data.picture || "/assets/auth/default-user.jpg"}
-            alt={user.data.name!}
-            width={40}
-            height={40}
-            className="w-10 h-10 object-cover rounded-full"
-          />
+          <button
+            onClick={toggleModal}
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <Image
+              src={user.data?.picture || "/assets/auth/default-user.jpg"}
+              alt={user.data?.name || "User"}
+              width={40}
+              height={40}
+              className="w-10 h-10 object-cover rounded-full border-2 border-white hover:border-gray-300 transition-colors"
+            />
+            <ChevronDown className="w-4 h-4 text-white" />
+          </button>
         ) : (
-          <div className="flex h-11 items-center py-0 mx-2 cursor-pointer">
+          <button
+            onClick={toggleModal}
+            className="flex h-11 items-center py-0 mx-2 cursor-pointer"
+          >
             <span className="text-2xl">
               <UserIcon />
             </span>
@@ -39,137 +77,170 @@ export default function UserMenu() {
               <span className="block text-xs text-white leading-3">
                 Welcome
               </span>
-              <b className="font-bold text-xs text-white leading-4">
+              <b className="font-bold text-xs text-white leading-4 flex items-center">
                 <span>Sign in / Register</span>
-                <span className="text-white scale-[60%] align-middle inline-block">
-                  <ChevronDown />
-                </span>
+                <ChevronDown className="w-3 h-3 ml-1" />
               </b>
             </div>
-          </div>
+          </button>
         )}
       </div>
-      {/* Content */}
-      <div
-        className={cn(
-          "hidden absolute top-0 -left-20 group-hover:block cursor-pointer",
-          {
-            "-left-[200px] lg:-left-[160px]": "Brown",
-          }
-        )}
-      >
-        <div className="relative left-2 mt-10 right-auto bottom-auto pt-2.5 text-[#222] p-0 text-sm z-40">
-          {/* Triangle */}
-          <div className="w-0 h-0 absolute left-[149px] top-1 right-24 !border-l-[10px] !border-l-transparent !border-r-[10px] !border-r-transparent !border-b-[10px] border-b-white"></div>
-          {/* Menu */}
-          <div className="rounded-3xl bg-white text-sm text-[#222] shadow-lg">
-            <div className="w-[305px]">
-              <div className="pt-5 px-6 pb-0">
-                {user ? (
-                  <div className="user-avatar flex flex-col items-center justify-center">
-                    <Image
-                      src={user.data.picture || "/assets/auth/default-user.jpg"}
-                      alt={user.data.name!}
-                      width={60}
-                      height={60}
-                      className="w-10 h-10 object-cover rounded-full"
-                    />
-                  </div>
-                ) : (
-                  <div className="space-y-1">
-                    <Link href="/login">
-                      <Button className="group/button relative items-center justify-center gap-x-1 whitespace-nowrap border border-orange-border transition-all duration-300 ease-bezier-1 select-none bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:bg-gradient-to-l text-white inline-block text-[14px] font-bold text-center cursor-pointer h-11 py-2 w-full rounded-md">
-                        Sign in
-                      </Button>
-                    </Link>
-                    <Link
-                      href="/register"
-                      className="h-10 text-sm hover:underline text-main-primary flex items-center justify-center cursor-pointer"
-                    >
-                      Register
-                    </Link>
-                  </div>
-                )}
-                {user && (
-                  <>
-                    <div className="w-full">
-                      {role === "ADMIN" ? (
-                        <Link
-                          href={"/dashboard/admin"}
-                          className="group/button relative items-center justify-center gap-x-1 whitespace-nowrap border border-orange-border transition-all duration-300 ease-bezier-1 select-none bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:bg-gradient-to-l text-white inline-block text-[14px] font-bold text-center cursor-pointer h-11 py-2 w-full rounded-md"
-                        >
-                          Switch to Admin Dashboard
-                        </Link>
-                      ) : role === "SELLER" ? (
-                        <Link
-                          href={"/dashboard/seller"}
-                          className="group/button relative items-center justify-center gap-x-1 whitespace-nowrap border border-orange-border transition-all duration-300 ease-bezier-1 select-none bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:bg-gradient-to-l text-white inline-block text-[14px] font-bold text-center cursor-pointer h-11 py-2 w-full rounded-md"
-                        >
-                          Switch to Vendor Dashboard
-                        </Link>
-                      ) : role === "DRIVER" ? (
-                        <Link
-                          href={"/dashboard/driver"}
-                          className="group/button relative items-center justify-center gap-x-1 whitespace-nowrap border border-orange-border transition-all duration-300 ease-bezier-1 select-none bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:bg-gradient-to-l text-white inline-block text-[14px] font-bold text-center cursor-pointer h-11 py-2 w-full rounded-md"
-                        >
-                          Switch to Rider Dashboard
-                        </Link>
-                      ) : (
-                        <Link
-                          href={"/dashboard/admin"}
-                          className="group/button relative items-center justify-center gap-x-1 whitespace-nowrap border border-orange-border transition-all duration-300 ease-bezier-1 select-none bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:bg-gradient-to-l text-white inline-block text-[14px] font-bold text-center cursor-pointer h-11 py-2 w-full rounded-md"
-                        >
-                          Apply to become a Vendor
-                        </Link>
-                      )}
-                    </div>
-                    <p className="my-3 text-center text-sm text-main-primary cursor-pointer">
-                      <a
-                        onClick={logout}
-                        className="block text-sm text-main-primary py-1.5 hover:underline"
-                      >
-                        Logout
-                      </a>
-                    </p>
-                  </>
-                )}
 
-                <Separator />
-              </div>
-              {/* Links */}
-              <div className="max-w-[calc(100vh-180px)] text-main-secondary overflow-y-auto overflow-x-hidden pt-0 px-2 pb-4">
-                <ul className="grid grid-cols-3 gap-2 py-2.5 ^px-4 w-full">
-                  {links.map((item) => (
-                    <li key={item.title} className="grid place-items-center">
-                      <Link href="#" className="space-y-2">
-                        <div className="w-14 h-14 rounded-full p-2 grid place-items-center bg-gray-100 hover:bg-gray-200">
-                          <span className="text-gray-500">{item.icon}</span>
-                        </div>
-                        <span className="block text-xs">{item.title}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-                <Separator className="!max-w-[257px] mx-auto" />
-                <ul className="pt-2.5 pr-4 pb-1 pl-4 w-[288px]">
-                  {extraLinks.map((item, i) => (
-                    <li key={i}>
-                      <Link
-                        href="#"
-                        className="block text-sm text-main-primary py-1.5 hover:underline"
-                      >
-                        {/* <a className="block text-sm text-main-primary py-1.5 hover:underline">
-                        </a> */}
+      {/* Modal Content */}
+      {isModalOpen && (
+        <div className="absolute top-full right-0 mt-2 z-50">
+          {/* Triangle Indicator */}
+          <div className="w-0 h-0 absolute -top-2 right-4 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[10px] border-b-white"></div>
+
+          {/* Menu */}
+          <div className="rounded-2xl bg-white text-sm text-[#222] shadow-xl border border-gray-200 min-w-[320px]">
+            <div className="p-6 pb-2">
+              {user ? (
+                <div className="user-avatar flex flex-col items-center justify-center mb-2">
+                  <Image
+                    src={user.data?.picture || "/assets/auth/default-user.jpg"}
+                    alt={user.data?.name || "User"}
+                    width={40}
+                    height={40}
+                    className="w-16 h-16 object-cover rounded-full border-2 border-gray-200 mb-3"
+                  />
+                  <h3 className="font-semibold text-lg">{user.data?.name}</h3>
+                  <p className="text-gray-600 text-sm">{user.data?.email}</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Link href="/login" onClick={closeModal}>
+                    <Button className="w-full bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:from-[#ff7539] hover:to-[#ff0a0a] text-white h-11 rounded-lg font-bold">
+                      Sign in
+                    </Button>
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={closeModal}
+                    className="h-10 text-sm hover:underline text-main-primary flex items-center justify-center cursor-pointer font-medium"
+                  >
+                    Create an account
+                  </Link>
+                </div>
+              )}
+
+              {user && (
+                <>
+                  <div className="w-full mb-2">
+                    {role === "ADMIN" ? (
+                      <>
+                        <h3 className="font-semibold mb-2 text-center text-lg">
+                          ₦{user.data?.balance}
+                        </h3>
+                        <Link
+                          href="/dashboard/admin"
+                          onClick={closeModal}
+                          className="block w-full text-center bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:from-[#ff7539] hover:to-[#ff0a0a] text-white py-3 rounded-lg font-bold text-sm transition-all"
+                        >
+                          Admin Dashboard
+                        </Link>
+                      </>
+                    ) : role === "SELLER" ? (
+                      <>
+                        <h3 className="font-semibold mb-2 text-center text-lg">
+                          ₦{user.data?.balance}
+                        </h3>
+                        <Link
+                          href="/dashboard/seller"
+                          onClick={closeModal}
+                          className="block w-full text-center bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:from-[#ff7539] hover:to-[#ff0a0a] text-white py-3 rounded-lg font-bold text-sm transition-all"
+                        >
+                          Vendor Dashboard
+                        </Link>
+                      </>
+                    ) : role === "DRIVER" ? (
+                      <>
+                        <h3 className="font-semibold mb-2 text-center text-lg">
+                          ₦{user.data?.balance}
+                        </h3>
+
+                        <Link
+                          href="/dashboard/driver"
+                          onClick={closeModal}
+                          className="block w-full text-center bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:from-[#ff7539] hover:to-[#ff0a0a] text-white py-3 rounded-lg font-bold text-sm transition-all"
+                        >
+                          Rider Dashboard
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        {/* <Link
+                          aria-disabled
+                          href="/become-seller"
+                          onClick={closeModal}
+                          className="block w-full text-center bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:from-[#ff7539] hover:to-[#ff0a0a] text-white py-3 rounded-lg font-bold text-sm transition-all"
+                        >
+                          Become a Vendor
+                        </Link> */}
+
+                        <h3 className="font-semibold text-center text-lg">
+                          ₦{user.data?.balance}
+                        </h3>
+                      </>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => {
+                      logout();
+                      closeModal();
+                    }}
+                    className="w-full text-center text-red-600 hover:text-red-700 py-2 hover:underline font-medium text-sm"
+                  >
+                    Logout
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* <Separator /> */}
+
+            {/* Quick Links */}
+            <div className="p-2">
+              {/* <ul className="grid grid-cols-3 gap-3 mb-3">
+                {links.map((item) => (
+                  <li key={item.title} className="grid place-items-center">
+                    <Link
+                      href={item.link}
+                      onClick={closeModal}
+                      className="space-y-2 group"
+                    >
+                      <div className="w-12 h-12 rounded-full p-2 grid place-items-center bg-gray-100 group-hover:bg-orange-100 group-hover:text-orange-600 transition-colors">
+                        <span className="text-gray-500 group-hover:text-orange-600 transition-colors">
+                          {item.icon}
+                        </span>
+                      </div>
+                      <span className="block text-xs font-medium text-center">
                         {item.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul> */}
+
+              <Separator className="my-1" />
+
+              <ul className="space-y-1">
+                {extraLinks.map((item, i) => (
+                  <li key={i}>
+                    <Link
+                      href={item.link}
+                      onClick={closeModal}
+                      className="block text-sm text-gray-700 hover:text-orange-600 py-2 px-2 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      {item.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -191,6 +262,7 @@ const links = [
     link: "/profile/wishlist",
   },
 ];
+
 const extraLinks = [
   {
     title: "Profile",
@@ -198,34 +270,30 @@ const extraLinks = [
   },
   {
     title: "Settings",
-    link: "/",
+    link: "/settings",
   },
   {
-    title: "Become a Seller",
+    title: "Become a Vendor",
     link: "/become-seller",
   },
   {
-    title: "Help Center",
-    link: "",
-  },
-  {
     title: "Return & Refund Policy",
-    link: "/",
+    link: "/return-policy",
   },
   {
     title: "Legal & Privacy",
-    link: "",
+    link: "/legal",
   },
   {
     title: "Discounts & Offers",
-    link: "",
+    link: "/offers",
   },
   {
     title: "Order Dispute Resolution",
-    link: "",
+    link: "/dispute-resolution",
   },
-  {
-    title: "Report a Problem",
-    link: "",
-  },
+  // {
+  //   title: "Report a Problem",
+  //   link: "/report-problem",
+  // },
 ];

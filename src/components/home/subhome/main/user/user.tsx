@@ -1,19 +1,18 @@
-import { SimpleProduct } from "@/lib/types";
-import { currentUser } from "@clerk/nextjs/server";
+"use client";
+
+import { SimpleProduct } from "@/types/product";
 import Image from "next/image";
+import { useAuth } from "@/hooks/auth";
 import UserImg from "@/public/assets/images/default-user.avif";
 import Link from "next/link";
 import { Button } from "../../../ui/button";
 import MainSwiper from "../../../shared/swiper";
 import UserCardProducts from "./products";
 
-export default async function HomeUserCard({
-  products,
-}: {
-  products: SimpleProduct[];
-}) {
-  const user = await currentUser();
-  const role = user?.privateMetadata.role;
+export default function HomeUserCard() {
+  const { user } = useAuth();
+  const role = user?.data?.role;
+
   return (
     <div className="h-full hidden min-[1170px]:block relative bg-white rounded-md shadow-sm overflow-hidden">
       <div
@@ -105,10 +104,10 @@ export default async function HomeUserCard({
           ) : (
             <div className="w-full flex justify-between gap-x-4">
               <Button variant="orange-gradient">
-                <Link href="/sign-up">Join</Link>
+                <Link href="/register">Join</Link>
               </Button>
               <Button variant="gray">
-                <Link href="/sign-in">Sign in</Link>
+                <Link href="/login">Sign in</Link>
               </Button>
             </div>
           )}

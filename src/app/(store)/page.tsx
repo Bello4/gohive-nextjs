@@ -2,6 +2,7 @@ import Header from "@/components/home/layout/header/header";
 import MobileApp from "@/components/home/layout/footer/mobile-nav";
 import Featured from "@/components/home/subhome/main/featured";
 import HomeMainSwiper from "@/components/home/subhome/main/home-swiper";
+import HomeUserCard from "@/components/home/subhome/main/user/user";
 import AppMenu from "@/components/home/layout/categories-header/app-menu";
 import { getHomeFeaturedCategories } from "@/queries/home";
 import DispatchMenu from "@/components/home/layout/categories-header/dispatch-menu";
@@ -39,7 +40,7 @@ export default async function Home() {
                 className="cursor-pointer hidden min-[1465px]:block bg-cover bg-no-repeat rounded-md"
                 style={{
                   backgroundImage:
-                    "url(/assets/images/ads/winter-sports-clothing.jpg)",
+                    "url(/assets/ads/winter-sports-clothing.jpg)",
                 }}
               />
               {/* Middle */}
@@ -56,12 +57,7 @@ export default async function Home() {
               </div>
               {/* Right */}
               <div className="h-full">
-                {/* <HomeUserCard
-                  products={products_user_card.filter(
-                    (product): product is SimpleProduct =>
-                      "variantSlug" in product
-                  )}
-                /> */}
+                <HomeUserCard />
               </div>
             </div>
             {/* Animated deals */}

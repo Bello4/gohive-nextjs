@@ -1,10 +1,12 @@
-import { useUser } from "@clerk/nextjs";
+"use client";
+
+import { useAuth } from "@/hooks/auth";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import AnimatedContainer from "../../animated-container";
 import DefaultUserImg from "@/public/assets/images/default-user.jpg";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/store/ui/button";
+import { Button } from "@/components/home/ui/button";
 import UserDetails from "./user-details";
 
 export default function Step1({
@@ -14,18 +16,19 @@ export default function Step1({
   step: number;
   setStep: Dispatch<SetStateAction<number>>;
 }) {
-  const { isSignedIn } = useUser();
-  const [user, setUser] = useState<boolean>(false);
+  const { user } = useAuth();
+
+  const [authUser, setAuthUser] = useState<boolean>(false);
 
   useEffect(() => {
-    if (isSignedIn) {
-      setUser(isSignedIn);
+    if (user) {
+      setAuthUser(user);
     }
-  }, [isSignedIn]);
+  }, [user]);
   return (
     <div className="w-full">
       <AnimatedContainer>
-        {isSignedIn && user ? (
+        {user && authUser ? (
           <UserDetails />
         ) : (
           <div className="h-full">
@@ -56,7 +59,7 @@ export default function Step1({
           </div>
         )}
       </AnimatedContainer>
-      {isSignedIn && (
+      {user && (
         <div className="h-[100px] flex pt-4 px-2 justify-between">
           <button
             type="button"

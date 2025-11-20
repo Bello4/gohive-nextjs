@@ -1,4 +1,4 @@
-import PaymentsTable from "@/components/store/profile/payments/payments-table";
+import PaymentsTable from "@/components/home/profile/payments/payments-table";
 import { getUserPayments } from "@/queries/profile";
 
 export default async function ProfilePaymentPage() {

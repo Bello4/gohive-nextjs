@@ -18,30 +18,24 @@ export default function FiltersHeader({
   );
 
   useEffect(() => {
-    // Update currentParams whenever the searchParams change in the URL
     setCurrentParams(searchParams.toString());
   }, [searchParams]);
 
   // Destructure queries into an array format
   const queriesArray = Object.entries(queries);
   const queriesLength = queriesArray.reduce((count, [queryKey, queryValue]) => {
-    if (queryKey === "sort") return count; // Exclude sort from the count
-    return count + (Array.isArray(queryValue) ? queryValue.length : 1); // Count array lengths or single values
+    if (queryKey === "sort") return count;
+    return count + (Array.isArray(queryValue) ? queryValue.length : 1);
   }, 0);
 
-  // Handle Clearing all parameters
   const handleClearQueries = () => {
     const params = new URLSearchParams(searchParams);
-
     params.forEach((_, key) => {
       params.delete(key);
     });
-
-    // Replace the URL with the pathname and no query string
     replace(pathname);
   };
 
-  // Handle removing specific query values or entire queries
   const handleRemoveQuery = (
     query: string,
     array?: string[],
@@ -50,20 +44,17 @@ export default function FiltersHeader({
     const params = new URLSearchParams(searchParams);
 
     if (specificValue && array) {
-      // Remove the specific value from the array and update the params
       const updatedArray = array.filter((value) => value !== specificValue);
-      params.delete(query); // Remove the query from params
-      // Re-add remaining values if any
+      params.delete(query);
       updatedArray.forEach((value) => params.append(query, value));
     } else {
-      // Remove the entire query
       params.delete(query);
     }
 
-    // Replace the URL with updated params
     replace(`${pathname}?${params.toString()}`);
-    setCurrentParams(params.toString()); // Trigger re-render with updated params
+    setCurrentParams(params.toString());
   };
+
   return (
     <div className="pt-2.5 pb-5">
       <div className="flex items-center justify-between h-4 leading-5">
@@ -71,7 +62,7 @@ export default function FiltersHeader({
         {queriesLength > 0 && (
           <div
             className="text-xs text-orange-background cursor-pointer hover:underline"
-            onClick={() => handleClearQueries()}
+            onClick={handleClearQueries}
           >
             Clear All
           </div>
@@ -81,25 +72,37 @@ export default function FiltersHeader({
       <div className="mt-3 flex flex-wrap gap-2">
         {queriesArray.map(([queryKey, queryValue]) => {
           if (queryKey === "sort") return null;
+
           const isArrayQuery = Array.isArray(queryValue);
           const queryValues = isArrayQuery ? queryValue : [queryValue];
 
+          // Filter out non-string values and ensure we only render strings
+          const validValues = queryValues.filter(
+            (val) => typeof val === "string" || typeof val === "number"
+          );
+
+          if (validValues.length === 0) return null;
+
           return (
             <div key={queryKey} className="flex flex-wrap gap-2">
-              {queryValues.map((value, index) => (
+              {validValues.map((value, index) => (
                 <div
-                  key={index}
+                  key={`${queryKey}-${index}`}
                   className="border cursor-pointer py-0.5 px-1.5 rounded-sm text-sm w-fit text-center"
                 >
                   <span className="text-main-secondary overflow-hidden text-ellipsis whitespace-nowrap mr-2">
-                    {value}
+                    {String(value)} {/* Safely convert to string */}
                   </span>
                   <X
                     className="w-3 text-main-secondary hover:text-black cursor-pointer inline-block"
                     onClick={() => {
                       isArrayQuery
-                        ? handleRemoveQuery(queryKey, queryValues, value) // Remove specific value from array query
-                        : handleRemoveQuery(queryKey); // Remove entire query
+                        ? handleRemoveQuery(
+                            queryKey,
+                            queryValues as string[],
+                            String(value)
+                          )
+                        : handleRemoveQuery(queryKey);
                     }}
                   />
                 </div>

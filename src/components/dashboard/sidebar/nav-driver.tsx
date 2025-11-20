@@ -3,16 +3,12 @@
 import * as React from "react";
 
 import {
-  BoxesIcon,
   BoxListIcon,
-  CategoriesIcon,
-  CreateStoreIcon,
   DashboardIcon,
-  StoreIcon,
   SettingsIcon,
   PeopleIcon,
   DriverIcon,
-  ThreeBoxesIcon,
+  ReviewIcon,
   ProductsIcon,
   InventoryIcon,
   CouponIcon,
@@ -33,6 +29,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Users2Icon } from "lucide-react";
+import Link from "next/link";
 
 import { useAuth } from "@/hooks/auth";
 
@@ -54,11 +51,6 @@ export function RiderSidebar({
         icon: DashboardIcon,
       },
       {
-        title: "Products",
-        icon: ProductsIcon,
-        url: "products",
-      },
-      {
         title: "Orders",
         icon: BoxListIcon,
         url: "orders",
@@ -69,19 +61,14 @@ export function RiderSidebar({
         url: "inventory",
       },
       {
-        title: "Coupons",
-        icon: CouponIcon,
-        url: "coupons",
-      },
-      {
         title: "Supply",
         icon: ShippingIcon,
         url: "shipping",
       },
       {
-        title: "Settings",
-        icon: SettingsIcon,
-        url: "settings",
+        title: "Reviews",
+        icon: ReviewIcon,
+        url: "review",
       },
     ],
   };
@@ -94,10 +81,9 @@ export function RiderSidebar({
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
-                {/* <IconInnerShadowTop className="!size-5" /> */}
+              <Link href={"/"}>
                 <Logo width="50%" height="20px" />
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

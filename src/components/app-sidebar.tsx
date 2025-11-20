@@ -2,26 +2,13 @@
 
 import * as React from "react";
 import {
-  IconCamera,
   IconChartBar,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
   IconFolder,
-  IconHelp,
-  IconInnerShadowTop,
   IconListDetails,
-  IconReport,
-  IconSearch,
-  IconSettings,
   IconUsers,
 } from "@tabler/icons-react";
-import Logo from "@/components/shared/logo";
-import { NavDocuments } from "@/components/nav-documents";
 import { NavMain } from "@/components/nav-main";
-import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
@@ -32,60 +19,67 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useAuth } from "@/hooks/auth";
+import Image from "next/image";
+import Link from "next/link";
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: IconDashboard,
-    },
-    {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
-  ],
-};
+// Logo image
+// import LogoImg from "../../../public/assets/icons/logo-small.png";
+import LogoImg from "../../public/assets/icons/logo-small.png";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth(); // ✅ Correct placement
+
+  const data = {
+    user: {
+      name: user?.data?.name ?? "Unknown User",
+      email: user?.data?.email ?? "unknown@example.com",
+      avatar: user?.data?.picture || "/assets/auth/default-user.jpg",
+    },
+    navMain: [
+      {
+        title: "Overview",
+        url: "/profile",
+        icon: IconDashboard,
+      },
+      {
+        title: "Orders",
+        url: "/profile/orders",
+        icon: IconListDetails,
+      },
+      {
+        title: "Payment",
+        url: "/profile/payment",
+        icon: IconChartBar,
+      },
+      {
+        title: "Shipping address",
+        url: "/profile/addresses",
+        icon: IconFolder,
+      },
+      {
+        title: "Reviews",
+        url: "/profile/reviews",
+        icon: IconUsers,
+      },
+      {
+        title: "History",
+        url: "/profile/history/1",
+        icon: IconUsers,
+      },
+      {
+        title: "Wishlist",
+        url: "/profile/wishlist/1",
+        icon: IconUsers,
+      },
+      {
+        title: "Following",
+        url: "/profile/following/1",
+        icon: IconUsers,
+      },
+    ],
+  };
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -95,17 +89,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
+              <Link href={"/"}>
                 {/* <IconInnerShadowTop className="!size-5" /> */}
-                <Logo width="50%" height="20px" />
-              </a>
+                <div className=" z-50" style={{ width: "50%", height: "20px" }}>
+                  <Image
+                    src={LogoImg}
+                    alt="GoHive"
+                    className="w-full h-full object-cover overflow-visible"
+                  />
+                </div>
+                {/* <Logo width="50%" height="20px" /> */}
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

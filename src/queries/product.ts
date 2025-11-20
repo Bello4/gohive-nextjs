@@ -116,9 +116,9 @@ export async function getProducts(
   try {
     const params = new URLSearchParams();
 
-    // Add filters
+    // Add filters - use the same field names as your Laravel controller expects
     Object.entries(filters).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
+      if (value !== undefined && value !== null && value !== "") {
         if (Array.isArray(value)) {
           value.forEach((v) => params.append(key, v));
         } else {
@@ -132,43 +132,60 @@ export async function getProducts(
     params.append("page", page.toString());
     params.append("pageSize", pageSize.toString());
 
-    console.log("Making API call to:", `/api/v1/products?${params.toString()}`);
+    // console.log("Making API call to:", `/api/v1/products?${params.toString()}`);
 
     const response = await axios.get(`/api/v1/products?${params.toString()}`, {
-      timeout: 10000, // 10 second timeout
-      validateStatus: (status) => status < 500, // Don't throw on 4xx errors
+      timeout: 10000,
+      validateStatus: (status) => status < 500,
     });
 
-    console.log("API Response status:", response.status);
-    console.log("API Response data:", response.data);
+    // console.log("API Response status:", response.status);
+    // console.log("API Response data:", response.data);
 
-    // Check if the response indicates success
+    // Handle different response structures
     if (response.data.success === false) {
       throw new Error(
-        response.data.error || "API returned unsuccessful response"
+        response.data.message || response.data.error || "API request failed"
       );
     }
 
-    // Make sure the data structure matches what we expect
-    if (!response.data.data) {
-      throw new Error("Invalid API response structure: missing data field");
+    // Support both response structures:
+    // - Direct data: { products: [], ... }
+    // - Wrapped data: { success: true, data: { products: [], ... } }
+    const responseData = response.data.data || response.data;
+
+    if (!responseData.products) {
+      throw new Error("Invalid API response: missing products field");
     }
 
-    return response.data.data;
+    return {
+      products: responseData.products,
+      totalPages: responseData.totalPages,
+      currentPage: responseData.currentPage,
+      pageSize: responseData.pageSize,
+      totalCount: responseData.totalCount,
+    };
   } catch (error: any) {
     console.error("Error in getProducts function:");
     console.error(" - Message:", error.message);
     console.error(" - Response data:", error.response?.data);
     console.error(" - Response status:", error.response?.status);
-    console.error(" - Request URL:", error.config?.url);
 
     // Throw a more descriptive error
+    if (error.response?.data?.message) {
+      throw new Error(`Products API Error: ${error.response.data.message}`);
+    }
+
     if (error.response?.data?.error) {
       throw new Error(`Products API Error: ${error.response.data.error}`);
     }
 
     if (error.code === "ECONNABORTED") {
       throw new Error("Request timeout - please try again");
+    }
+
+    if (error.response?.status === 404) {
+      throw new Error("Products API endpoint not found");
     }
 
     throw new Error(`Failed to fetch products: ${error.message}`);

@@ -93,15 +93,15 @@ export const columns: ColumnDef<AdminStoreType>[] = [
       );
     },
   },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => {
-      return (
-        <span className="text-sm line-clamp-3">{row.original.description}</span>
-      );
-    },
-  },
+  // {
+  //   accessorKey: "description",
+  //   header: "Description",
+  //   cell: ({ row }) => {
+  //     return (
+  //       <span className="text-sm line-clamp-3">{row.original.description}</span>
+  //     );
+  //   },
+  // },
 
   {
     accessorKey: "url",

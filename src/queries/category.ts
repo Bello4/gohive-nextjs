@@ -1,9 +1,16 @@
 import axios from "@/lib/axios";
 
 // Get all Categories
-export async function getAllCategories() {
-  const response = await axios.get("/api/v1/categories");
-  return response.data.categories; // 👈 plural
+// export async function getAllCategories(storeUrl?: string) {
+//   const response = await axios.get("/api/v1/getAllCategories");
+//   return response.data.categories; // 👈 plural
+// }
+
+export async function getAllCategories(storeUrl?: string) {
+  const params = storeUrl ? { url: storeUrl } : {};
+  const response = await axios.get("/api/v1/getAllCategories", { params });
+  // Depending on your Laravel response structure:
+  return response.data.data; // Adjust based on actual response
 }
 
 // Get a Category

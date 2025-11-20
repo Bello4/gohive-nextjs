@@ -1,5 +1,5 @@
 "use client";
-import { FiltersQueryType, ProductType } from "@/lib/types";
+import { FiltersQueryType, ProductType } from "@/types/product";
 import { getProducts } from "@/queries/product";
 import { useEffect, useState } from "react";
 import ProductCard from "../cards/product/product-card";

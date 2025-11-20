@@ -4,9 +4,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { User } from "@/types/user";
 
 // Custom components
-import UserDetails from "@/components/dashboard/forms/user-details";
+// import UserDetails from "@/components/dashboard/forms/user-details";
+import DispatchDetails from "@/components/dashboard/forms/dispatch-details";
+
 import CustomModal from "@/components/dashboard/shared/custom-modal";
 
 // UI components
@@ -31,13 +34,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+// Lucide icons
+import {
+  BadgeCheck,
+  BadgeMinus,
+  Edit,
+  MoreHorizontal,
+  Trash,
+} from "lucide-react";
+
 // Hooks and utilities
 // import { useToast } from "@/components/ui/use-toast";
 import { showToast } from "nextjs-toast-notify";
 import { useModal } from "@/providers/modal-provider";
-
-// Lucide icons
-import { Edit, MoreHorizontal, Trash } from "lucide-react";
 
 // Queries
 import { getAllDispatchs } from "@/queries/dispatch";
@@ -47,8 +56,9 @@ import { ColumnDef } from "@tanstack/react-table";
 
 // Prisma models
 import { Dispatch } from "@/types/dispatch";
+import { OrderDetails } from "@/types/logistic";
 
-export const columns: ColumnDef<Dispatch>[] = [
+export const columns = (drivers: User[] = []): ColumnDef<OrderDetails>[] => [
   // {
   //   accessorKey: "image",
   //   header: "Image",
@@ -67,43 +77,42 @@ export const columns: ColumnDef<Dispatch>[] = [
   //   },
   // },
   {
-    accessorKey: "name",
-    header: "Name",
+    accessorKey: "ordernumber",
+    header: "Order No",
     cell: ({ row }) => {
-      return (
-        <span className="font-extrabold text-lg capitalize">
-          {row.original.name}
-        </span>
-      );
+      return <span className=" capitalize">{row.original.orderNumber}</span>;
     },
   },
 
-  {
-    accessorKey: "recieverName",
-    header: "Recievers Name",
-    cell: ({ row }) => {
-      return (
-        <span className="font-extrabold text-lg capitalize">
-          {row.original.recieverName}
-        </span>
-      );
-    },
-  },
-
-  {
-    accessorKey: "phone",
-    header: "Phone",
-    cell: ({ row }) => {
-      return <span>{row.original.phone}</span>;
-    },
-  },
   {
     accessorKey: "status",
-    header: "Status",
+    header: "Order Status",
     cell: ({ row }) => {
       return (
-        <span className="text-muted-foreground flex justify-center">
-          {row.original.status}
+        <span className=" capitalize">{row.original.status.readable}</span>
+      );
+    },
+  },
+
+  {
+    accessorKey: "payment",
+    header: "Payment Status",
+    cell: ({ row }) => {
+      return <span>{row.original.payment.method}</span>;
+    },
+  },
+  {
+    accessorKey: "",
+    header: "Payment",
+    cell: ({ row }) => {
+      return (
+        <span className="flex ">
+          {row.original.payment.status}
+          {row.original.payment.status == "paid" ? (
+            <BadgeCheck className="stroke-green-300" />
+          ) : (
+            <BadgeMinus />
+          )}
         </span>
       );
     },
@@ -114,7 +123,7 @@ export const columns: ColumnDef<Dispatch>[] = [
     cell: ({ row }) => {
       const rowData = row.original;
 
-      return <CellActions rowData={rowData} />;
+      return <CellActions rowData={rowData} drivers={drivers} />;
     },
   },
 ];
@@ -122,10 +131,11 @@ export const columns: ColumnDef<Dispatch>[] = [
 // Define props interface for CellActions component
 interface CellActionsProps {
   rowData: Dispatch;
+  drivers?: User[]; // Add drivers prop
 }
 
 // CellActions component definition
-const CellActions: React.FC<CellActionsProps> = ({ rowData }) => {
+const CellActions: React.FC<CellActionsProps> = ({ rowData, drivers }) => {
   // Hooks
   const { setOpen, setClose } = useModal();
   const [loading, setLoading] = useState(false);
@@ -153,7 +163,7 @@ const CellActions: React.FC<CellActionsProps> = ({ rowData }) => {
                 // Custom modal component
                 <CustomModal>
                   {/* Store details component */}
-                  <UserDetails data={{ ...rowData }} />
+                  <DispatchDetails drivers={drivers} data={{ ...rowData }} />
                 </CustomModal>,
                 async () => {
                   return {

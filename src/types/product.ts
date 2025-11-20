@@ -4,6 +4,15 @@ import { Spec } from "./spec";
 import { Color } from "./color";
 import { Question } from "./question";
 
+export type SimpleProduct = {
+  name: string;
+  slug: string;
+  variantName: string;
+  variantSlug: string;
+  price: number;
+  image: string;
+};
+
 export interface Product {
   id: string;
   name: string;

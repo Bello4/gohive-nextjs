@@ -31,6 +31,7 @@ export default function Page() {
       </div>
     );
   }
+  // console.log(drivers);
 
   if (driversError || dispatchsError) {
     return <p className="text-red-500">Failed to load data</p>;
@@ -42,11 +43,16 @@ export default function Page() {
         <div className="@container/main flex flex-1 flex-col gap-2">
           <div className="flex flex-col gap-4 px-4 py-4 md:gap-6 md:py-6">
             <DataTable
-              modalChildren={<DispatchDetails drivers={drivers} />}
-              filterValue={["name", "recieverName", "phone", "status"]}
-              data={dispatchs}
+              modalChildren={
+                <DispatchDetails
+                  data={dispatchs.data}
+                  drivers={drivers?.data}
+                />
+              }
+              filterValue={"ordernumber"}
+              data={dispatchs.data}
               searchPlaceholder="Search Dispatch..."
-              columns={columns}
+              columns={columns(drivers?.data || [])}
             />
           </div>
         </div>

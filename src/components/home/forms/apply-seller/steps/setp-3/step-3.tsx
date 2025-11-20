@@ -1,5 +1,5 @@
 import { StoreShippingSchema } from "@/lib/schemas";
-import { StoreType } from "@/lib/types";
+import { StoreType } from "@/types/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
@@ -13,8 +13,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import ImageUpload from "@/components/dashboard/shared/image-upload";
-import Input from "@/components/store/ui/input";
-import { Textarea } from "@/components/store/ui/textarea";
+import Input from "@/components/home/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { applySeller } from "@/queries/store";
 import toast from "react-hot-toast";
 
@@ -68,6 +68,7 @@ export default function Step3({
         defaultDeliveryTimeMax: values.defaultDeliveryTimeMax,
         returnPolicy: values.returnPolicy,
       });
+
       if (response.id) {
         setStep((prev) => prev + 1);
       }

@@ -24,6 +24,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import StoreSwitcher from "./store-switcher";
+import Link from "next/link";
 
 import { useAuth } from "@/hooks/auth";
 import { Store } from "@/types/store";
@@ -89,9 +90,9 @@ export function SellerSidebar({ stores, ...props }: SellerSidebarProps) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
+              <Link href={"/"}>
                 <Logo width="50%" height="20px" />
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

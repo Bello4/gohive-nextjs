@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Users2Icon } from "lucide-react";
 import { useAuth } from "@/hooks/auth";
+import Link from "next/link";
 
 export function AdminSidebar({
   ...props
@@ -68,10 +69,9 @@ export function AdminSidebar({
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
-                {/* <IconInnerShadowTop className="!size-5" /> */}
+              <Link href={"/"}>
                 <Logo width="50%" height="20px" />
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

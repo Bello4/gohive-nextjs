@@ -16,6 +16,7 @@ export default async function ProductFilters({
   const { category, subCategory, offer } = queries;
   const categories = await getAllCategories(storeUrl);
   const offers = await getAllOfferTags(storeUrl);
+  console.log(categories, offers);
   return (
     <div className="h-[840px] transition-transform overflow-auto pr-6 pb-2.5 flex-none basis-[196px] sticky top-0 overflow-x-hidden scrollbar">
       <FiltersHeader queries={queries} />

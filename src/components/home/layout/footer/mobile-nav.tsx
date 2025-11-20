@@ -28,7 +28,7 @@ export default function MobileApp() {
         </div>
       </Link>
 
-      <Link href="/" className="grid place-items-center">
+      <Link href="/logistic/orders" className="grid place-items-center">
         <DriverIcon />
 
         <div className="w-full mt-1 text-xs text-center text-gray-500 font-semibold">

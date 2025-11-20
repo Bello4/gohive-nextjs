@@ -6,6 +6,8 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import ModalProvider from "@/providers/modal-provider";
 
+import { Toaster } from "@/components/ui/sonner";
+
 // Fonts
 const interFont = Inter({ subsets: ["latin"] });
 const barlowFont = Barlow({
@@ -37,7 +39,13 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ModalProvider>{children}</ModalProvider>
+          <Toaster />
         </ThemeProvider>
+        <script
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`}
+          async
+          defer
+        />
       </body>
     </html>
   );

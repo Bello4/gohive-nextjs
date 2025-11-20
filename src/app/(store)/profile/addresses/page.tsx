@@ -1,4 +1,4 @@
-import AddressContainer from "@/components/store/profile/addresses/container";
+import AddressContainer from "@/components/home/profile/addresses/container";
 import { db } from "@/lib/db";
 import { getUserShippingAddresses } from "@/queries/user";
 

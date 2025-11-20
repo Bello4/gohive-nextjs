@@ -13,7 +13,7 @@ export async function getStorePageDetails(
   storeUrl: string
 ): Promise<StorePageDetails> {
   const response = await axios.get<StorePageDetailsResponse>(
-    `/api/v1/stores/${storeUrl}/page-details`
+    `/api/v1/stores/${storeUrl}`
   );
 
   if (!response.data.success) {

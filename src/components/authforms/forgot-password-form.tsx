@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import Link from "next/link";
+// Logo image
+import LogoImg from "../../../public/assets/icons/logo-small.png";
 
 export function ForgotPasswordForm({
   className,
@@ -17,6 +19,19 @@ export function ForgotPasswordForm({
           <form className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
+                <div
+                  className="mb-4 z-50"
+                  style={{ width: "50%", height: "20px" }}
+                >
+                  <Link href={"/"}>
+                    <Image
+                      src={LogoImg}
+                      alt="GoHive"
+                      className="w-full h-full object-cover overflow-visible"
+                    />
+                  </Link>
+                </div>
+
                 <h1 className="text-2xl font-bold">Forgot Password</h1>
                 <p className="text-muted-foreground text-balance">
                   Input your email to get your password reset link
@@ -31,7 +46,10 @@ export function ForgotPasswordForm({
                   required
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:from-[#ff7539] hover:to-[#ff0a0a] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              >
                 Get Reset Link
               </Button>
               {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">

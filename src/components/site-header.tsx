@@ -14,9 +14,9 @@ export function SiteHeader({ header }) {
         />
         <h1 className="text-base font-medium">{header}</h1>
         <div className="ml-auto flex items-center gap-2">
-          <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
+          {/* <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
             <ThemeToggle />
-          </Button>
+          </Button> */}
         </div>
       </div>
     </header>

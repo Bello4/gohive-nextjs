@@ -18,7 +18,7 @@ export default async function StorePage({
   return (
     <>
       <Header />
-      <CategoriesHeader />
+      {/* <CategoriesHeader /> */}
       <StoreDEetails details={store} />
       <div className="max-w-[95%] mx-auto border-t">
         <div className="flex mt-5 gap-x-5">

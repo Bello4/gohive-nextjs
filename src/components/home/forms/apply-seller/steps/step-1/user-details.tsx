@@ -1,10 +1,13 @@
-import Input from "@/components/store/ui/input";
-import { UserButton, useUser } from "@clerk/nextjs";
+"use client";
+
+import { useAuth } from "@/hooks/auth";
+
+import Input from "@/components/home/ui/input";
 import Image from "next/image";
 import { useRef } from "react";
 
 export default function UserDetails() {
-  const { user } = useUser();
+  const { user } = useAuth();
 
   const btnConatinerRef = useRef<HTMLDivElement | null>(null);
 
@@ -19,7 +22,7 @@ export default function UserDetails() {
       <div className="relative">
         {/* User Image */}
         <Image
-          src={user?.imageUrl!}
+          src={user.data?.picture || "/assets/auth/default-user.jpg"}
           alt="User avatar"
           width={200}
           height={200}
@@ -31,21 +34,13 @@ export default function UserDetails() {
           ref={btnConatinerRef}
           className="absolute inset-0 z-0 opacity-0 pointer-events-none"
         >
-          <UserButton />
+          {/*  */}
         </div>
       </div>
       {/* First Name Input */}
       <Input
         name="firstName"
-        value={user?.firstName || ""}
-        onChange={() => {}}
-        type="text"
-        readonly
-      />
-      {/* Last Name Input */}
-      <Input
-        name="lastName"
-        value={user?.lastName || ""}
+        value={user?.data.name || ""}
         onChange={() => {}}
         type="text"
         readonly

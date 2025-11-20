@@ -24,20 +24,17 @@ const StoreStatusSelect: FC<Props> = ({ status, storeId }) => {
   const options = Object.values(StoreStatus).filter((s) => s !== newStatus);
 
   // Handle click
+
+  // Handle click with separate parameters
   const handleClick = async (selectedStatus: StoreStatus) => {
     try {
-      const response = await updateStoreStatus(storeId, selectedStatus);
-      if (response) {
-        setNewStatus(response as StoreStatus);
-        setIsOpen(false);
-      }
-    } catch (error: any) {
-      // toast({
-      //   variant: "destructive",
-      //   title: "Error",
-      //   description: error.toString(),
-      // });
-      showToast.error("The store has been deleted.", {
+      console.log(storeId, selectedStatus);
+      const response = await updateStoreStatus({
+        id: storeId,
+        status: selectedStatus,
+      });
+
+      showToast.success(response.message, {
         duration: 3000,
         progress: false,
         position: "bottom-right",
@@ -45,6 +42,23 @@ const StoreStatusSelect: FC<Props> = ({ status, storeId }) => {
         icon: "",
         sound: false,
       });
+
+      if (response.store) {
+        setNewStatus(response.store.status as StoreStatus);
+        setIsOpen(false);
+      }
+    } catch (error: any) {
+      showToast.error(
+        error.response?.data?.message || "Failed to update store status",
+        {
+          duration: 3000,
+          progress: false,
+          position: "bottom-right",
+          transition: "bounceIn",
+          icon: "",
+          sound: false,
+        }
+      );
     }
   };
   return (
