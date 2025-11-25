@@ -26,6 +26,37 @@ export async function updateStoreStatus(data: {
   });
   return response.data;
 }
+
+export interface Store {
+  id: string;
+  name: string;
+  logo: string;
+  cover: string;
+  default_delivery_time_min: string;
+  default_delivery_time_max: string;
+  average_rating: number;
+  url: string;
+  featured?: boolean;
+}
+
+export interface FeaturedStoresResponse {
+  featured: Store[];
+  regular: Store[];
+}
+
+// Get featured stores for homepage
+export async function getFeaturedStores(): Promise<FeaturedStoresResponse> {
+  const response = await axios.get("/api/v1/featured-stores");
+  return response.data.data || response.data;
+}
+
+// Get all stores (featured + regular combined)
+export async function getAllFeaturedStores(): Promise<Store[]> {
+  const response = await axios.get("/api/v1/featured-stores");
+  const data = response.data.data || response.data;
+  return [...data.featured, ...data.regular];
+}
+
 //  Update Category
 // export async function updateStoreStatus(
 //   {storeId

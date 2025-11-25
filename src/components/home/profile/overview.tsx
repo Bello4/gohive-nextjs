@@ -70,16 +70,16 @@ const menu = [
     icon: <Heart />,
     link: "/profile/wishlist",
   },
-  {
-    title: "Following",
-    icon: <Rss />,
-    link: "/profile/following/1",
-  },
-  {
-    title: "Viewed",
-    icon: <Eye />,
-    link: "/profile/history/1",
-  },
+  // {
+  //   title: "Following",
+  //   icon: <Rss />,
+  //   link: "/profile/following/1",
+  // },
+  // {
+  //   title: "Viewed",
+  //   icon: <Eye />,
+  //   link: "/profile/history/1",
+  // },
   {
     title: "Coupons",
     icon: <Puzzle />,

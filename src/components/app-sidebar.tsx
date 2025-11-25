@@ -7,6 +7,8 @@ import {
   IconFolder,
   IconListDetails,
   IconUsers,
+  IconHelpCircle,
+  IconSettings,
 } from "@tabler/icons-react";
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -44,39 +46,44 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
       {
         title: "Orders",
-        url: "/profile/orders",
+        url: "/logistic/orders",
         icon: IconListDetails,
       },
       {
         title: "Payment",
-        url: "/profile/payment",
+        url: "/profile/wallet",
         icon: IconChartBar,
       },
-      {
-        title: "Shipping address",
-        url: "/profile/addresses",
-        icon: IconFolder,
-      },
+      // {
+      //   title: "Shipping address",
+      //   url: "/profile/addresses",
+      //   icon: IconFolder,
+      // },
       {
         title: "Reviews",
         url: "/profile/reviews",
         icon: IconUsers,
       },
       {
-        title: "History",
-        url: "/profile/history/1",
-        icon: IconUsers,
+        title: "Settings",
+        url: "/profile/settings",
+        icon: IconSettings,
       },
       {
-        title: "Wishlist",
-        url: "/profile/wishlist/1",
-        icon: IconUsers,
+        title: "Support",
+        url: "/support",
+        icon: IconHelpCircle,
       },
-      {
-        title: "Following",
-        url: "/profile/following/1",
-        icon: IconUsers,
-      },
+      // {
+      //   title: "Wishlist",
+      //   url: "/profile/wishlist/1",
+      //   icon: IconUsers,
+      // },
+      // {
+      //   title: "Following",
+      //   url: "/profile/following/1",
+      //   icon: IconUsers,
+      // },
     ],
   };
 

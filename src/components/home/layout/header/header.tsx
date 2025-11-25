@@ -8,10 +8,10 @@ import Logo from "@/components/shared/logo";
 
 export default function Header() {
   return (
-    <div className="sticky top-0 bg-white shadow z-50 bg-gradient-to-r from-slate-500 to-slate-800">
+    <div className=" sticky top-0 bg-white shadow z-50 bg-gradient-to-r from-slate-500 to-slate-800">
       <div className="h-full w-full lg:flex text-white px-4 lg:px-12">
         <div className="flex lg:w-full lg:flex-1 flex-col lg:flex-row gap-3 py-3">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between px-4">
             <Link href="/">
               {/* <h1 className="font-extrabold text-3xl font-mono">HiveGo</h1> */}
               <Logo width="50%" height="20px" />
@@ -24,9 +24,9 @@ export default function Header() {
           {/* <Search /> */}
         </div>
         <div className="hidden lg:flex w-full lg:w-fit lg:mt-2 justify-end mt-1.5 pl-6">
-          <div className="lg:flex">
+          {/* <div className="lg:flex">
             <DownloadApp />
-          </div>
+          </div> */}
           {/* <CountryLanguageCurrencySelector userCountry={userCountry} /> */}
           <UserMenu />
           {/* <Cart /> */}

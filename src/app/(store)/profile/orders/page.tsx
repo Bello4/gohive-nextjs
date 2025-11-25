@@ -1,4 +1,4 @@
-import OrdersTable from "@/components/store/profile/orders/orders-table";
+import OrdersTable from "@/components/home/profile/orders/orders-table";
 import { getUserOrders } from "@/queries/profile";
 
 export default async function ProfileOrdersPage() {

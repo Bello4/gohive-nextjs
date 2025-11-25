@@ -101,7 +101,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     setStatus(null);
 
     axios
-      .post("/forgot-password", { email })
+      .post("api/v1/forgot-password", { email })
       .then((response) => setStatus(response.data.status))
       .catch((error) => {
         if (error.response.status !== 422) throw error;
@@ -110,19 +110,47 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
       });
   };
 
+  // const resetPassword = async ({ setErrors, setStatus, ...props }) => {
+  //   await csrf();
+
+  //   setErrors([]);
+  //   setStatus(null);
+
+  //   axios
+  //     .post("api/v1/reset-password", { token: params.token, ...props })
+  //     .then((response) =>
+  //       router.push("/login?reset=" + btoa(response.data.status))
+  //     )
+  //     .catch((error) => {
+  //       if (error.response.status !== 422) throw error;
+
+  //       setErrors(error.response.data.errors);
+  //     });
+  // };
+  // hooks/useAuth.js
   const resetPassword = async ({ setErrors, setStatus, ...props }) => {
     await csrf();
 
     setErrors([]);
     setStatus(null);
 
+    // Make sure we're sending the token in the request
+    console.log("Sending reset password request with:", {
+      email: props.email,
+      token: props.token ? `${props.token.substring(0, 20)}...` : "missing",
+      hasPassword: !!props.password,
+      hasPasswordConfirmation: !!props.password_confirmation,
+    });
+
     axios
-      .post("/reset-password", { token: params.token, ...props })
-      .then((response) =>
-        router.push("/login?reset=" + btoa(response.data.status))
-      )
+      .post("/api/v1/reset-password", props) // Just pass all props directly
+      .then((response) => {
+        console.log("Reset password success:", response.data);
+        router.push("/login?reset=" + btoa(response.data.status));
+      })
       .catch((error) => {
-        if (error.response.status !== 422) throw error;
+        console.error("Reset password error:", error.response?.data);
+        if (error.response?.status !== 422) throw error;
 
         setErrors(error.response.data.errors);
       });

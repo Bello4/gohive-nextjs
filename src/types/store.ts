@@ -76,6 +76,16 @@ export interface StoreDetails {
   userId: number;
 }
 
+export type StoreDetailsType = {
+  name: string;
+  id: string;
+  description: string;
+  logo: string;
+  cover: string;
+  averageRating: number;
+  numReviews: number;
+};
+
 export type AdminStoreType = {
   user: {
     name: string;

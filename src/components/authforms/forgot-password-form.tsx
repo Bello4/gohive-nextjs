@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -5,6 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { useAuth } from "@/hooks/auth"; // Adjust the path to your useAuth hook
+
 // Logo image
 import LogoImg from "../../../public/assets/icons/logo-small.png";
 
@@ -12,11 +17,49 @@ export function ForgotPasswordForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [email, setEmail] = useState("");
+  const [errors, setErrors] = useState<{ email?: string[] }>({});
+  const [status, setStatus] = useState<string | null>(null);
+
+  const { forgotPassword } = useAuth({
+    middleware: "guest",
+    redirectIfAuthenticated: "/",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!email.trim()) {
+      setErrors({ email: ["Please enter your email address"] });
+      return;
+    }
+
+    // Clear previous errors and status
+    setErrors({});
+    setStatus(null);
+
+    // Call the forgotPassword function from useAuth hook
+    await forgotPassword({
+      setErrors,
+      setStatus,
+      email,
+    });
+  };
+
+  const handleReset = () => {
+    setErrors({});
+    setStatus(null);
+    setEmail("");
+  };
+
+  const hasErrors = Object.keys(errors).length > 0;
+  const isSuccess = status !== null;
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <div
@@ -32,53 +75,99 @@ export function ForgotPasswordForm({
                   </Link>
                 </div>
 
-                <h1 className="text-2xl font-bold">Forgot Password</h1>
+                <h1 className="text-2xl font-bold">
+                  {isSuccess ? "Check Your Email" : "Forgot Password"}
+                </h1>
                 <p className="text-muted-foreground text-balance">
-                  Input your email to get your password reset link
+                  {isSuccess
+                    ? "We've sent a password reset link to your email address."
+                    : "Input your email to get your password reset link"}
                 </p>
               </div>
-              <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:from-[#ff7539] hover:to-[#ff0a0a] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-              >
-                Get Reset Link
-              </Button>
-              {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                <span className="bg-card text-muted-foreground relative z-10 px-2">
-                  Or continue with
-                </span>
-              </div>
-              <div className="flex justify-center ">
-                <Button variant="outline" type="button" className="w-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                      d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                      fill="currentColor"
+
+              {/* Success Message */}
+              {status && (
+                <div className="p-3 rounded-lg bg-green-50 text-green-700 border border-green-200 text-sm">
+                  {status}
+                </div>
+              )}
+
+              {/* Error Messages */}
+              {hasErrors && (
+                <div className="p-3 rounded-lg bg-red-50 text-red-700 border border-red-200 text-sm">
+                  {Object.values(errors)
+                    .flat()
+                    .map((error, index) => (
+                      <div key={index}>{error}</div>
+                    ))}
+                </div>
+              )}
+
+              {!isSuccess ? (
+                <>
+                  <div className="grid gap-3">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="m@example.com"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        // Clear errors when user starts typing
+                        if (errors.email) {
+                          setErrors({});
+                        }
+                      }}
+                      required
+                      className={
+                        errors.email
+                          ? "border-red-500 focus:border-red-500"
+                          : ""
+                      }
                     />
-                  </svg>
-                  <span className="sr-only">Login with Google</span>
-                </Button>
-              </div> */}
+                    {errors.email && (
+                      <div className="text-red-500 text-sm">
+                        {errors.email[0]}
+                      </div>
+                    )}
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:from-[#ff7539] hover:to-[#ff0a0a] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                  >
+                    Get Reset Link
+                  </Button>
+                </>
+              ) : (
+                <div className="space-y-4">
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-700 text-center">
+                      If you dont see the email in your inbox, please check your
+                      spam folder.
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={handleReset}
+                    className="w-full bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:from-[#ff7539] hover:to-[#ff0a0a] transition-all duration-200"
+                  >
+                    Try Another Email
+                  </Button>
+                </div>
+              )}
+
               <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <Link href="/register" className="underline underline-offset-4">
-                  Sign up
+                Remember your password?{" "}
+                <Link href="/login" className="underline underline-offset-4">
+                  Sign in
                 </Link>
               </div>
             </div>
           </form>
           <div className="bg-muted relative hidden md:block">
             <Image
-              className="object-cover filter grayscale "
+              className="object-cover filter grayscale"
               src="/assets/auth/auth-bg.png"
               alt="Next.js logo"
               fill

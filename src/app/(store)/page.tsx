@@ -6,6 +6,7 @@ import HomeUserCard from "@/components/home/subhome/main/user/user";
 import AppMenu from "@/components/home/layout/categories-header/app-menu";
 import { getHomeFeaturedCategories } from "@/queries/home";
 import DispatchMenu from "@/components/home/layout/categories-header/dispatch-menu";
+import StoreSlider from "@/components/home/store-page/store-slider";
 // import { getProducts } from "@/queries/product";
 import Image from "next/image";
 import FeaturedCategories from "@/components/home/subhome/featured-categories";
@@ -71,7 +72,8 @@ export default async function Home() {
             </div>
 
             <DispatchMenu />
-            <AppMenu />
+            <StoreSlider />
+            {/* <AppMenu /> */}
             <div className="mt-10 space-y-10">
               {/* <FeaturedCategories categories={featuredCategories} /> */}
               {/* <div>

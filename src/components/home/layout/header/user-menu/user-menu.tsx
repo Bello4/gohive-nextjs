@@ -270,7 +270,7 @@ const extraLinks = [
   },
   {
     title: "Settings",
-    link: "/settings",
+    link: "/profile/settings",
   },
   {
     title: "Become a Vendor",

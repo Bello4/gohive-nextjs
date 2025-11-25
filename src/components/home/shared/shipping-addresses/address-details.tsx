@@ -4,7 +4,7 @@
 import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 
 // Prisma model
-import { Country } from "@prisma/client";
+import { Country } from "@/types/country";
 
 // Form handling utilities
 import * as z from "zod";
@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 // Types, Schema
 import { ShippingAddressSchema } from "@/lib/schemas";
-import { SelectMenuOption, UserShippingAddressType } from "@/lib/types";
+import { SelectMenuOption, UserShippingAddressType } from "@/types/country";
 
 // UI Components
 import CountrySelector from "@/components/shared/country-selector";
@@ -28,10 +28,10 @@ import {
 import { Input } from "@/components/ui/input";
 
 // Queries
-import { upsertShippingAddress } from "@/queries/user";
+// import { upsertShippingAddress } from "@/queries/user";
 // Utils
-import { v4 } from "uuid";
-import { useToast } from "@/components/ui/use-toast";
+// import { v4 } from "uuid";
+// import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { Button } from "../../ui/button";
 
@@ -47,7 +47,7 @@ const AddressDetails: FC<AddressDetailsProps> = ({
   setShow,
 }) => {
   // Initializing necessary hooks
-  const { toast } = useToast(); // Hook for displaying toast messages
+  // const { toast } = useToast(); // Hook for displaying toast messages
   const router = useRouter(); // Hook for routing
 
   // State for country selector
@@ -95,29 +95,29 @@ const AddressDetails: FC<AddressDetailsProps> = ({
   ) => {
     try {
       // Upserting category data
-      const response = await upsertShippingAddress({
-        id: data?.id ? data.id : v4(),
-        firstName: values.firstName,
-        lastName: values.lastName,
-        phone: values.phone,
-        address1: values.address1,
-        address2: values.address2 || "",
-        city: values.city,
-        countryId: values.countryId,
-        state: values.state,
-        default: values.default,
-        zip_code: values.zip_code,
-        userId: "",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
+      // const response = await upsertShippingAddress({
+      //   id: data?.id ? data.id : v4(),
+      //   firstName: values.firstName,
+      //   lastName: values.lastName,
+      //   phone: values.phone,
+      //   address1: values.address1,
+      //   address2: values.address2 || "",
+      //   city: values.city,
+      //   countryId: values.countryId,
+      //   state: values.state,
+      //   default: values.default,
+      //   zip_code: values.zip_code,
+      //   userId: "",
+      //   createdAt: new Date(),
+      //   updatedAt: new Date(),
+      // });
 
-      // Displaying success message
-      toast({
-        title: data?.id
-          ? "Shipping address has been updated."
-          : `Congratulations! Shipping address is now created.`,
-      });
+      // // Displaying success message
+      // toast({
+      //   title: data?.id
+      //     ? "Shipping address has been updated."
+      //     : `Congratulations! Shipping address is now created.`,
+      // });
 
       // Refresh data
       router.refresh();

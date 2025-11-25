@@ -534,6 +534,39 @@
   animation: bounce 1.5s ease-in-out infinite;
 }
 
+/* styles/globals.css */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+.store-slider {
+  --slider-height-percentage: 60%;
+  --organic-arrow-thickness: 4px;
+  --organic-arrow-border-radius: 0px;
+  --organic-arrow-height: 40px;
+  --organic-arrow-color: #6b7280;
+  --control-button-width: 10%;
+  --control-button-height: 25%;
+  --control-button-background: transparent;
+  --control-bullet-color: #6b7280;
+  --control-bullet-active-color: #3b82f6;
+  --loader-bar-color: #3b82f6;
+  --loader-bar-height: 6px;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .store-slider {
+    --slider-height-percentage: 50%;
+    --organic-arrow-height: 30px;
+  }
+}
+
 @keyframes rotate {
   100% {
     transform: rotate(360deg);

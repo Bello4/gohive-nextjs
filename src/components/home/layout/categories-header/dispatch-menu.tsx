@@ -119,7 +119,7 @@ export default function DispatchMenu() {
         href={"logistic/recieve"}
         className="absolute bottom-4 shadow-sm shadow-orange-400 right-4 bg-white text-black px-4 py-2 rounded-full font-semibold shadow-lg transform transition-all duration-300 hover:scale-110 hover:bg-black hover:text-white hover:shadow-xl group-hover:translate-y-0 translate-y-2  group-hover:opacity-100"
       >
-        Order Ride →
+        Order Rider →
       </Link>
     </div>
   );

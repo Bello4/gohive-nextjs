@@ -1,10 +1,13 @@
+"use client";
+import { useAuth } from "@/hooks/auth";
 import AddressContainer from "@/components/home/profile/addresses/container";
-import { db } from "@/lib/db";
-import { getUserShippingAddresses } from "@/queries/user";
+import { getAllCountries } from "@/queries/country";
 
-export default async function ProfileAddressesPage() {
-  const addresses = await getUserShippingAddresses();
-  const countries = await db.country.findMany();
+export default function ProfileAddressesPage() {
+  const { user } = useAuth();
+
+  const addresses = user?.data?.address;
+  const countries = getAllCountries();
   return (
     <div>
       <AddressContainer addresses={addresses} countries={countries} />
