@@ -1,33 +1,11 @@
 import Header from "@/components/home/layout/header/header";
 import MobileApp from "@/components/home/layout/footer/mobile-nav";
-import Featured from "@/components/home/subhome/main/featured";
 import HomeMainSwiper from "@/components/home/subhome/main/home-swiper";
 import HomeUserCard from "@/components/home/subhome/main/user/user";
-import AppMenu from "@/components/home/layout/categories-header/app-menu";
-import { getHomeFeaturedCategories } from "@/queries/home";
 import DispatchMenu from "@/components/home/layout/categories-header/dispatch-menu";
 import StoreSlider from "@/components/home/store-page/store-slider";
-// import { getProducts } from "@/queries/product";
-import Image from "next/image";
-import FeaturedCategories from "@/components/home/subhome/featured-categories";
-import ProductCard from "@/components/home/cards/product/product-card";
 
 export default async function Home() {
-  // const productsData = await getProducts({}, "", 1, 100);
-  // const { products } = productsData;
-
-  // const {
-  //   products_super_deals,
-  //   products_best_deals,
-  //   products_user_card,
-  //   products_featured,
-  // } = await getHomeDataDynamic([
-  //   { property: "offer", value: "best-deals", type: "simple" },
-  //   { property: "offer", value: "super-deals", type: "full" },
-  //   { property: "offer", value: "user-card", type: "simple" },
-  //   { property: "offer", value: "featured", type: "simple" },
-  // ]);
-  const featuredCategories = await getHomeFeaturedCategories();
   return (
     <>
       <Header />

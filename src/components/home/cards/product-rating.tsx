@@ -2,7 +2,7 @@
 import ReactStars from "react-rating-stars-component";
 
 export default function RatingCard({ rating }: { rating: number }) {
-  const fixed_rating = Number(rating.toFixed(2));
+  const fixed_rating = Number(rating);
   return (
     <div className="h-44 flex-1">
       <div className="p-6 bg-[#f5f5f5] flex flex-col h-full justify-center overflow-hidden rounded-lg">

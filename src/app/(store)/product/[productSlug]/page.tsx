@@ -1,19 +1,25 @@
+import { getProductBySlug } from "@/queries/product";
 import { redirect } from "next/navigation";
-import { handleProductPage } from "@/queries/product";
 
 interface ProductPageProps {
-  params: { productSlug: string };
+  params: {
+    productSlug: string;
+  };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  try {
-    const result = await handleProductPage(params.productSlug);
+  const product = await getProductBySlug(params.productSlug);
 
-    // Redirect based on API response
-    redirect(result.redirect);
-  } catch (error) {
-    // Fallback redirect if API fails
-    console.error("Error handling product page:", error);
+  // If product not found, redirect to homepage
+  if (!product) {
     redirect("/");
   }
+
+  // If product has no variants, redirect to homepage
+  if (!product.variants || product.variants.length === 0) {
+    redirect("/");
+  }
+
+  // Redirect to the first variant's page
+  redirect(`/product/${product.slug}/${product.variants[0].slug}`);
 }

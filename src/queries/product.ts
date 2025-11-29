@@ -11,6 +11,8 @@ import {
   FilteredSizesApiResponse,
   FilteredSizesResponse,
   SizeFilters,
+  VariantSimplified,
+  VariantImageType,
 } from "@/types/product";
 
 export async function getAllStoreProducts(storeUrl: string) {
@@ -227,7 +229,7 @@ export async function getProductPageData(
   variantSlug: string
 ): Promise<ProductPageData> {
   const response = await axios.get<ProductPageDataResponse>(
-    `/api/v1/products/${productSlug}/${variantSlug}/page-data`
+    `/api/v1/products/${productSlug}/${variantSlug}`
   );
 
   if (!response.data.success) {
@@ -265,4 +267,35 @@ export async function handleProductPage(productSlug: string): Promise<{
 export async function deleteProduct(id: string | number) {
   const response = await axios.delete(`/api/v1/categories/${id}`);
   return response.data;
+}
+
+export interface Product {
+  id: number;
+  slug: string;
+  name: string;
+  rating: number;
+  sales: number;
+  numReviews: number;
+  variants: VariantSimplified[];
+  variantImages: VariantImageType[];
+}
+
+/**
+ * Gets product by slug (without redirects - for use in page components)
+ */
+export async function getProductBySlug(
+  productSlug: string
+): Promise<Product | null> {
+  try {
+    const response = await axios.get(`/api/products/${productSlug}`);
+
+    if (response.data.success === false) {
+      return null;
+    }
+
+    return response.data.data;
+  } catch (error: any) {
+    console.error("Error fetching product:", error);
+    return null;
+  }
 }

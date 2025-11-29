@@ -42,7 +42,7 @@ const ProductInfo: FC<Props> = ({
     name,
     sku,
     colors,
-    variantInfo,
+    variantsInfo,
     sizes,
     isSale,
     saleEndDate,
@@ -142,15 +142,15 @@ const ProductInfo: FC<Props> = ({
       {/* Color wheel - variant switcher */}
       <div className="mt-4 space-y-2">
         <div className="relative flex items-center justify-between text-main-primary font-bold">
-          <span className="flex items-center gap-x-2">
+          {/* <span className="flex items-center gap-x-2">
             {colors.length > 1 ? "Colors" : "Color"}
             <ColorWheel colors={colors} size={25} />
-          </span>
+          </span> */}
         </div>
         <div className="mt-4">
-          {variantInfo.length > 0 && (
+          {variantsInfo.length > 0 && (
             <ProductVariantSelector
-              variants={variantInfo}
+              variants={variantsInfo}
               slug={productData.variantSlug}
               setVariantImages={setVariantImages}
               setActiveImage={setActiveImage}

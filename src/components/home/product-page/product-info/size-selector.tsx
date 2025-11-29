@@ -1,5 +1,5 @@
-import { CartProductType } from "@/lib/types";
-import { Size } from "@prisma/client";
+import { CartProductType } from "@/types/cart";
+import { Size } from "@/types/size";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FC, useEffect } from "react";
 
@@ -25,7 +25,7 @@ const SizeSelector: FC<Props> = ({ sizeId, sizes, handleChange }) => {
   }, []);
 
   const handleSelectSize = (size: Size) => {
-    params.set("size", size.id);
+    params.set("sizes", size.id);
     handleCartProductToBeAddedChange(size);
     replace(`${pathname}?${params.toString()}`);
   };

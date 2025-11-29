@@ -88,12 +88,12 @@ export default function OrderSummaryCard({ order }: OrderSummaryCardProps) {
         <div className="border-t pt-4 mt-4">
           <p className="font-medium text-gray-900 mb-3">Pricing Breakdown</p>
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
+            {/* <div className="flex justify-between">
               <span className="text-gray-600">Base Fare</span>
               <span className="text-gray-900">
                 {formatCurrency(order.pricing.base_fare)}
               </span>
-            </div>
+            </div> */}
             <div className="flex justify-between">
               <span className="text-gray-600">
                 Distance Fare ({formatNumber(order.metrics.distance_km)} km)

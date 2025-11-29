@@ -16,7 +16,7 @@ import useFromStore from "@/hooks/useFromStore";
 import { setCookie } from "cookies-next";
 
 interface Props {
-  productData: ProductPageDataType;
+  productData: ProductPageData;
   sizeId: string | undefined;
   children: ReactNode;
 }
@@ -209,7 +209,7 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
                     </div>
                   )}
                   {/* Action buttons */}
-                  <button className="relative w-full py-2.5 min-w-20 bg-orange-background hover:bg-orange-hover text-white h-11 rounded-3xl leading-6 inline-block font-bold whitespace-nowrap border border-orange-border cursor-pointer transition-all duration-300 ease-bezier-1 select-none">
+                  <button className="relative w-full py-2.5 min-w-20 bg-orange-background hover:bg-orange-hover  h-11 rounded-3xl leading-6 inline-block font-bold whitespace-nowrap border border-orange-border cursor-pointer transition-all duration-300 ease-bezier-1 select-none">
                     <span>Buy now</span>
                   </button>
                   <button

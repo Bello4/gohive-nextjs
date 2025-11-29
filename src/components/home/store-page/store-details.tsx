@@ -1,5 +1,5 @@
 "use client";
-import { StoreDetailsType } from "@/lib/types";
+import { StoreDetailsType } from "@/types/store";
 import { CircleCheckBig } from "lucide-react";
 import Image from "next/image";
 import ReactStars from "react-rating-stars-component";
@@ -15,20 +15,20 @@ export default function StoreDEetails({
   return (
     <div className="relative w-full pb-28">
       <div className="relative">
-        <Image
+        {/* <Image
           src={cover}
           alt={name}
           width={2000}
           height={500}
           className="w-full h-96 object-cover"
-        />
+        /> */}
         <div className="absolute -bottom-[100px] left-11 flex items-end">
           <Image
             src={logo}
             alt={name}
             width={200}
             height={200}
-            className="w-44 h-44 object-cover rounded-full shadow-2xl"
+            className="w-25 h-25 object-cover rounded-full shadow-2xl"
           />
           <div className="pl-1 mb-5">
             <div className="flex items-center gap-x-1">

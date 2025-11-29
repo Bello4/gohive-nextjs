@@ -11,7 +11,7 @@ const ShipTo: FC<Props> = ({ countryName, countryCode, city }) => {
   return (
     <div className="flex justify-between h-7">
       <div className="flex items-center font-bold mr-2 whitespace-nowrap">
-        <span>Ship to</span>
+        <span>Deliver to</span>
       </div>
       <div className="flex items-center overflow-hidden">
         <MapPin className="w-4 mb-1 stroke-main-primary" />

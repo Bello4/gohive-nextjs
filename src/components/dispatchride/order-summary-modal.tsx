@@ -17,7 +17,7 @@ export default function OrderSummaryModal({
   isSubmitting,
   error,
 }: OrderSummaryModalProps) {
-  const deliveryFee = orderData.distance * 150;
+  const deliveryFee = Math.max(orderData.distance * 400, 1000);
   const insuranceFee = orderData.insurance
     ? (orderData.package.value || 0) * 0.02
     : 0;

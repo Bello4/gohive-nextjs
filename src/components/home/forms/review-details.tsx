@@ -70,7 +70,7 @@ export default function ReviewDetails({
   const handleSubmit = async (values: z.infer<typeof AddReviewSchema>) => {
     try {
       const response = await upsertReview(productId, {
-        id: data?.id || v4(),
+        id: data?.id,
         variant: values.variantName,
         images: values.images,
         quantity: values.quantity,

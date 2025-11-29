@@ -13,6 +13,20 @@ export type SimpleProduct = {
   image: string;
 };
 
+export type ProductShippingDetailsType = {
+  shippingFeeMethod: string;
+  shippingService: string;
+  shippingFee: number;
+  extraShippingFee: number;
+  deliveryTimeMin: number;
+  deliveryTimeMax: number;
+  returnPolicy: string;
+  countryCode: string;
+  countryName: string;
+  city: string;
+  isFreeShipping: boolean;
+};
+
 export interface Product {
   id: string;
   name: string;
@@ -132,8 +146,12 @@ export interface Size {
 
 export interface ProductVariantImage {
   id: string;
+  order: number | null;
+  alt: string;
   url: string;
-  alt?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  productVariantId: string;
 }
 
 export interface VariantSimplified {
@@ -256,9 +274,22 @@ export interface ProductPageData {
   variantSlug: string;
   name: string;
   description: string;
+  variantDescription: string;
   variantName: string;
+  variantImage: string;
+  weight: number;
+  shippingFeeMethod: string;
   questions: Question[];
   sizes: Size[];
+  images: {
+    id: string;
+    order: number | null;
+    alt: string;
+    url: string;
+    createdAt: Date;
+    updatedAt: Date;
+    productVariantId: string;
+  }[];
   product: {
     id: string;
     name: string;
@@ -273,7 +304,7 @@ export interface ProductPageData {
     createdAt: string;
     updatedAt: string;
   };
-  variantInfo: {
+  variantsInfo: {
     id: string;
     variantName: string;
     variantDescription: string | null;
@@ -289,7 +320,7 @@ export interface ProductPageData {
     images: ProductVariantImage[];
     colors: Color[];
     specs: Spec[];
-  } | null;
+  }[];
   store: {
     id: string;
     name: string;
@@ -322,6 +353,7 @@ export interface ProductPageData {
     deliveryTimeMin: number;
     deliveryTimeMax: number;
     shippingService: string;
+    shippingFeeMethod: string;
   };
   reviewsStatistics: {
     averageRating: number;
@@ -354,9 +386,10 @@ export interface ProductPageData {
     }[];
   };
   reviews: Review[];
+  rating: number;
 }
 
-export interface getProductPageData {
+export interface GetProductPageData {
   productId: string;
   variantId: string;
   productSlug: string;

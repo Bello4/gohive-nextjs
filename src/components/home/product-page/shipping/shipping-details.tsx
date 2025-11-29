@@ -1,5 +1,5 @@
 "use client";
-import { ProductShippingDetailsType } from "@/lib/types";
+import { ProductShippingDetailsType } from "@/types/product";
 import { ChevronDown, ChevronRight, ChevronUp, Truck } from "lucide-react";
 import { FC, useEffect, useState } from "react";
 import ProductShippingFee from "./shipping-fee";
@@ -56,13 +56,13 @@ const ShippingDetails: FC<Props> = ({ shippingDetails, quantity, weight }) => {
             {shippingDetails.isFreeShipping ? (
               <span className="text-sm font-bold flex items-center">
                 <span>
-                  Free Shipping to <span>{countryName}</span>
+                  Free Delivery to <span>{countryName}</span>
                 </span>
               </span>
             ) : (
               <span className="text-sm font-bold flex items-center">
                 <span>
-                  Shipping to <span>{countryName}</span>
+                  Delivery to <span>{countryName}</span>
                 </span>
                 <span>&nbsp;for ${shippingTotal}</span>
               </span>
@@ -74,9 +74,10 @@ const ShippingDetails: FC<Props> = ({ shippingDetails, quantity, weight }) => {
           Service:&nbsp;<strong className="text-sm">{shippingService}</strong>
         </span>
         <span className="flex items-center text-sm ml-5">
-          Delivery:&nbsp;
+          Delivery Time:&nbsp;
           <strong className="text-sm">
-            {minDate.slice(4)} - {maxDate.slice(4)}
+            {/* {minDate.slice(4)} - {maxDate.slice(4)} */}
+            {deliveryTimeMin} mins - {deliveryTimeMax} mins
           </strong>
         </span>
         {/* Product shipping fee */}

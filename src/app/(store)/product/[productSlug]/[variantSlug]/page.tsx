@@ -10,7 +10,6 @@ import ProductReviews from "@/components/home/product-page/reviews/product-revie
 import StoreProducts from "@/components/home/product-page/store-products";
 import { Separator } from "@/components/ui/separator";
 import { getProductPageData, getProducts } from "@/queries/product";
-// import { currentUser } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
 
 interface PageProps {
@@ -26,7 +25,7 @@ export default async function ProductVariantPage({
 }: PageProps) {
   // Fetch product data based on the product slug and variant slug
   const productData = await getProductPageData(productSlug, variantSlug);
-
+  console.log(productData);
   // If no product data is found, show the 404 Not Found page
   if (!productData) {
     return notFound();
@@ -43,7 +42,7 @@ export default async function ProductVariantPage({
 
     // If the sizeId is not valid, redirect to the same product page without the size parameter
     if (!isValidSize) {
-      return redirect(`/products/${productSlug}/${variantSlug}`);
+      return redirect(`/product/${productSlug}/${variantSlug}`);
     }
   }
   // If no sizeId is provided and there's only one size available, automatically select it
@@ -55,7 +54,7 @@ export default async function ProductVariantPage({
 
   const {
     productId,
-    variantInfo,
+    variantsInfo,
     specs,
     questions,
     category,
@@ -64,9 +63,7 @@ export default async function ProductVariantPage({
     reviews,
   } = productData;
 
-  console.log("Category data:", category);
-  console.log("Category URL:", category?.url);
-
+  console.log("this -->", variantsInfo);
   // Add safety checks
   if (!category || !category.url) {
     console.error("Category or category URL is missing:", category);
@@ -74,25 +71,25 @@ export default async function ProductVariantPage({
     return []; // or whatever makes sense for your use case
   }
 
-  // const relatedProducts = await getProducts(
-  //   { category: category.url },
-  //   "",
-  //   1,
-  //   12
-  // );
+  const relatedProducts = await getProducts(
+    { category: category.url },
+    "",
+    1,
+    12
+  );
 
   return (
     <div>
       <Header />
-      <CategoriesHeader />
+      {/* <CategoriesHeader /> */}
       <div className="max-w-[1650px] mx-auto p-4 overflow-x-hidden">
         <ProductPageContainer productData={productData} sizeId={sizeId}>
-          {/* {relatedProducts.products && (
+          {relatedProducts.products && (
             <>
               <Separator />
               <RelatedProducts products={relatedProducts.products} />
             </>
-          )} */}
+          )}
           <Separator className="mt-6" />
           {/* Product reviews */}
           <ProductReviews
@@ -100,7 +97,7 @@ export default async function ProductVariantPage({
             rating={productData.rating}
             statistics={reviewsStatistics}
             reviews={reviews}
-            variantsInfo={variantInfo}
+            variantsInfo={variantsInfo}
           />
           <>
             <Separator className="mt-6" />
