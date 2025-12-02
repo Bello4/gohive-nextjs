@@ -1,5 +1,3 @@
-"use client";
-
 import useSWR from "swr";
 import axios from "@/lib/axios";
 import { useEffect } from "react";
@@ -13,9 +11,9 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     data: user,
     error,
     mutate,
-  } = useSWR("/api/v1/user", () =>
+  } = useSWR("/api/user", () =>
     axios
-      .get("/api/v1/user")
+      .get("/api/user")
       .then((res) => res.data)
       .catch((error) => {
         if (error.response.status !== 409) throw error;
@@ -31,46 +29,15 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 
     setErrors([]);
 
-    // axios
-    //   .post("/register", props)
-    //   .then(() => mutate())
-    //   .catch((error) => {
-    //     if (error.response.status !== 422) throw error;
+    axios
+      .post("/register", props)
+      .then(() => mutate())
+      .catch((error) => {
+        if (error.response.status !== 422) throw error;
 
-    //     setErrors(error.response.data.errors);
-    //   });
-
-    try {
-      const res = await axios.post("api/v1/register", props);
-
-      // Refresh user data
-      await mutate();
-
-      return res.data;
-    } catch (error) {
-      if (error.response?.status === 422) {
         setErrors(error.response.data.errors);
-      } else {
-        throw error;
-      }
-    }
+      });
   };
-
-  // const login = async ({ setErrors, setStatus, ...props }) => {
-  //   await csrf();
-
-  //   setErrors([]);
-  //   setStatus(null);
-
-  //   axios
-  //     .post("/login", props)
-  //     .then(() => mutate())
-  //     .catch((error) => {
-  //       if (error.response.status !== 422) throw error;
-
-  //       setErrors(error.response.data.errors);
-  //     });
-  // };
 
   const login = async ({ setErrors, setStatus, ...props }) => {
     await csrf();
@@ -78,20 +45,14 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     setErrors([]);
     setStatus(null);
 
-    try {
-      const res = await axios.post("api/v1/login", props);
+    axios
+      .post("/login", props)
+      .then(() => mutate())
+      .catch((error) => {
+        if (error.response.status !== 422) throw error;
 
-      // Refresh user data
-      await mutate();
-
-      return res.data;
-    } catch (error) {
-      if (error.response?.status === 422) {
         setErrors(error.response.data.errors);
-      } else {
-        throw error;
-      }
-    }
+      });
   };
 
   const forgotPassword = async ({ setErrors, setStatus, email }) => {
@@ -101,7 +62,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     setStatus(null);
 
     axios
-      .post("api/v1/forgot-password", { email })
+      .post("/forgot-password", { email })
       .then((response) => setStatus(response.data.status))
       .catch((error) => {
         if (error.response.status !== 422) throw error;
@@ -110,47 +71,19 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
       });
   };
 
-  // const resetPassword = async ({ setErrors, setStatus, ...props }) => {
-  //   await csrf();
-
-  //   setErrors([]);
-  //   setStatus(null);
-
-  //   axios
-  //     .post("api/v1/reset-password", { token: params.token, ...props })
-  //     .then((response) =>
-  //       router.push("/login?reset=" + btoa(response.data.status))
-  //     )
-  //     .catch((error) => {
-  //       if (error.response.status !== 422) throw error;
-
-  //       setErrors(error.response.data.errors);
-  //     });
-  // };
-  // hooks/useAuth.js
   const resetPassword = async ({ setErrors, setStatus, ...props }) => {
     await csrf();
 
     setErrors([]);
     setStatus(null);
 
-    // Make sure we're sending the token in the request
-    console.log("Sending reset password request with:", {
-      email: props.email,
-      token: props.token ? `${props.token.substring(0, 20)}...` : "missing",
-      hasPassword: !!props.password,
-      hasPasswordConfirmation: !!props.password_confirmation,
-    });
-
     axios
-      .post("/api/v1/reset-password", props) // Just pass all props directly
-      .then((response) => {
-        console.log("Reset password success:", response.data);
-        router.push("/login?reset=" + btoa(response.data.status));
-      })
+      .post("/reset-password", { token: params.token, ...props })
+      .then((response) =>
+        router.push("/login?reset=" + btoa(response.data.status))
+      )
       .catch((error) => {
-        console.error("Reset password error:", error.response?.data);
-        if (error.response?.status !== 422) throw error;
+        if (error.response.status !== 422) throw error;
 
         setErrors(error.response.data.errors);
       });
@@ -174,6 +107,11 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     if (middleware === "guest" && redirectIfAuthenticated && user)
       router.push(redirectIfAuthenticated);
 
+    if (middleware === "auth" && user && !user.email_verified_at)
+      router.push("/verify-email");
+
+    if (window.location.pathname === "/verify-email" && user?.email_verified_at)
+      router.push(redirectIfAuthenticated);
     if (middleware === "auth" && error) logout();
   }, [user, error]);
 
