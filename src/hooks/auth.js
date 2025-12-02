@@ -1,7 +1,7 @@
 "use client";
 
 import useSWR from "swr";
-import axios from "../lib/axios";
+import axios from "@/lib/axios";
 import { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 
@@ -41,7 +41,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     //   });
 
     try {
-      const res = await axios.post("/api/v1/register", props);
+      const res = await axios.post("api/v1/register", props);
 
       // Refresh user data
       await mutate();
@@ -79,7 +79,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     setStatus(null);
 
     try {
-      const res = await axios.post("/api/v1/login", props);
+      const res = await axios.post("api/v1/login", props);
 
       // Refresh user data
       await mutate();
