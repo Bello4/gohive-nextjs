@@ -18,33 +18,34 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
       .get("/api/v1/user")
       .then((res) => res.data)
       .catch((error) => {
-        if (error.response?.status === 409) {
-          router.push("/verify-email");
-        }
-        throw error;
+        if (error.response.status !== 409) throw error;
+
+        router.push("/verify-email");
       })
   );
 
-  // CSRF function - FIXED
-  const csrf = async () => {
-    try {
-      // Use absolute path for CSRF
-      await axios.get("/sanctum/csrf-cookie");
-      console.log("CSRF token obtained");
-    } catch (error) {
-      console.error("CSRF Error:", error);
-      throw error;
-    }
-  };
+  const csrf = () => axios.get("/sanctum/csrf-cookie");
 
-  // REGISTER - FIXED
   const register = async ({ setErrors, ...props }) => {
     await csrf();
+
     setErrors([]);
+
+    // axios
+    //   .post("/register", props)
+    //   .then(() => mutate())
+    //   .catch((error) => {
+    //     if (error.response.status !== 422) throw error;
+
+    //     setErrors(error.response.data.errors);
+    //   });
 
     try {
       const res = await axios.post("/api/v1/register", props);
-      await mutate(); // Refresh user data
+
+      // Refresh user data
+      await mutate();
+
       return res.data;
     } catch (error) {
       if (error.response?.status === 422) {
@@ -55,24 +56,36 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     }
   };
 
-  // LOGIN - FIXED (most important!)
+  // const login = async ({ setErrors, setStatus, ...props }) => {
+  //   await csrf();
+
+  //   setErrors([]);
+  //   setStatus(null);
+
+  //   axios
+  //     .post("/login", props)
+  //     .then(() => mutate())
+  //     .catch((error) => {
+  //       if (error.response.status !== 422) throw error;
+
+  //       setErrors(error.response.data.errors);
+  //     });
+  // };
+
   const login = async ({ setErrors, setStatus, ...props }) => {
-    await csrf(); // Get CSRF token FIRST
+    await csrf();
 
     setErrors([]);
     setStatus(null);
 
     try {
       const res = await axios.post("/api/v1/login", props);
-      await mutate(); // Refresh user data
+
+      // Refresh user data
+      await mutate();
+
       return res.data;
     } catch (error) {
-      console.error("Login Error Details:", {
-        status: error.response?.status,
-        data: error.response?.data,
-        headers: error.response?.headers,
-      });
-
       if (error.response?.status === 422) {
         setErrors(error.response.data.errors);
       } else {
@@ -81,78 +94,87 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     }
   };
 
-  // FORGOT PASSWORD - FIXED
   const forgotPassword = async ({ setErrors, setStatus, email }) => {
     await csrf();
 
     setErrors([]);
     setStatus(null);
 
-    try {
-      const response = await axios.post("/api/v1/forgot-password", { email });
-      setStatus(response.data.status);
-    } catch (error) {
-      if (error.response?.status === 422) {
+    axios
+      .post("api/v1/forgot-password", { email })
+      .then((response) => setStatus(response.data.status))
+      .catch((error) => {
+        if (error.response.status !== 422) throw error;
+
         setErrors(error.response.data.errors);
-      } else {
-        throw error;
-      }
-    }
+      });
   };
 
-  // RESET PASSWORD - FIXED
+  // const resetPassword = async ({ setErrors, setStatus, ...props }) => {
+  //   await csrf();
+
+  //   setErrors([]);
+  //   setStatus(null);
+
+  //   axios
+  //     .post("api/v1/reset-password", { token: params.token, ...props })
+  //     .then((response) =>
+  //       router.push("/login?reset=" + btoa(response.data.status))
+  //     )
+  //     .catch((error) => {
+  //       if (error.response.status !== 422) throw error;
+
+  //       setErrors(error.response.data.errors);
+  //     });
+  // };
+  // hooks/useAuth.js
   const resetPassword = async ({ setErrors, setStatus, ...props }) => {
     await csrf();
 
     setErrors([]);
     setStatus(null);
 
-    try {
-      const response = await axios.post("/api/v1/reset-password", props);
-      router.push("/login?reset=" + btoa(response.data.status));
-    } catch (error) {
-      if (error.response?.status === 422) {
+    // Make sure we're sending the token in the request
+    console.log("Sending reset password request with:", {
+      email: props.email,
+      token: props.token ? `${props.token.substring(0, 20)}...` : "missing",
+      hasPassword: !!props.password,
+      hasPasswordConfirmation: !!props.password_confirmation,
+    });
+
+    axios
+      .post("/api/v1/reset-password", props) // Just pass all props directly
+      .then((response) => {
+        console.log("Reset password success:", response.data);
+        router.push("/login?reset=" + btoa(response.data.status));
+      })
+      .catch((error) => {
+        console.error("Reset password error:", error.response?.data);
+        if (error.response?.status !== 422) throw error;
+
         setErrors(error.response.data.errors);
-      } else {
-        throw error;
-      }
-    }
+      });
   };
 
-  // LOGOUT - FIXED
+  const resendEmailVerification = ({ setStatus }) => {
+    axios
+      .post("/email/verification-notification")
+      .then((response) => setStatus(response.data.status));
+  };
+
   const logout = async () => {
-    try {
-      await axios.post("/api/v1/logout");
-      await mutate(null); // Clear user data
-      router.push("/login");
-    } catch (error) {
-      console.error("Logout error:", error);
-      // Still redirect to login even if logout fails
-      router.push("/login");
+    if (!error) {
+      await axios.post("/logout").then(() => mutate());
     }
+
+    window.location.pathname = "/login";
   };
 
-  // EMAIL VERIFICATION - FIXED
-  const resendEmailVerification = async ({ setStatus }) => {
-    try {
-      const response = await axios.post(
-        "/api/v1/email/verification-notification"
-      );
-      setStatus(response.data.status);
-    } catch (error) {
-      console.error("Email verification error:", error);
-    }
-  };
-
-  // useEffect for middleware
   useEffect(() => {
-    if (middleware === "guest" && redirectIfAuthenticated && user) {
+    if (middleware === "guest" && redirectIfAuthenticated && user)
       router.push(redirectIfAuthenticated);
-    }
 
-    if (middleware === "auth" && error) {
-      logout();
-    }
+    if (middleware === "auth" && error) logout();
   }, [user, error]);
 
   return {
