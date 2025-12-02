@@ -58,7 +58,9 @@ export default function StoreHorizontalList() {
           <div className="flex items-center">
             <span className="text-yellow-400 text-sm">⭐</span>
             <span className="text-xs text-gray-700 ml-1">
-              {store.average_rating?.toFixed(2) || "0.0"}
+              {store.average_rating
+                ? Number(store.average_rating).toFixed(2)
+                : "0.00"}
             </span>
           </div>
         </div>
