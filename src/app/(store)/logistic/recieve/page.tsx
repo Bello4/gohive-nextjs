@@ -51,31 +51,10 @@ export interface OrderData {
 }
 
 export default function DispatchRidePage() {
-  const router = useRouter();
-  const { user } = useAuth();
   const [showSummary, setShowSummary] = useState(false);
   const [orderData, setOrderData] = useState<OrderData | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (!user) {
-      router.push("/login");
-    }
-  }, [user, router]);
-
-  // Show loading while checking auth
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p>Redirecting to login...</p>
-        </div>
-      </div>
-    );
-  }
-
   // Initialize paystack hook
   const { startPayment } = usePaystackPayment();
 
@@ -85,6 +64,7 @@ export default function DispatchRidePage() {
     setSubmitError(null);
   }, []);
 
+  const router = useRouter();
   // Paystack payment success handler
   const handlePaystackSuccess = useCallback(
     async (response: any) => {
@@ -97,7 +77,6 @@ export default function DispatchRidePage() {
     },
     [orderData]
   );
-
   // Paystack payment close handler
   const handlePaystackClose = useCallback(() => {
     console.log("Payment modal closed");
@@ -194,6 +173,26 @@ export default function DispatchRidePage() {
   const handlePlaceOrder = useCallback(async () => {
     await handlePayment();
   }, [handlePayment]);
+
+  const { user } = useAuth();
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+  }, [user, router]);
+
+  // Show loading while checking auth
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p>Redirecting to login...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

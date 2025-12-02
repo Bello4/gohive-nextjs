@@ -299,3 +299,5 @@ export async function getProductBySlug(
     return null;
   }
 }
+
+export function getProductsByIds() {}

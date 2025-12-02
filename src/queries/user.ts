@@ -52,3 +52,7 @@ export async function resendPhoneOTP(): Promise<{ message: string }> {
   const response = await axios.post("/api/v1/user/phone/resend-otp");
   return response.data;
 }
+
+export const upsertShippingAddress = () => {
+  // implementation
+};

@@ -22,87 +22,95 @@ interface Props {
 }
 
 const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
-  // If there is no product data available, render nothing (null)
-  if (!productData) return null;
-  const { productId, variantId, variantSlug, images, shippingDetails, sizes } =
-    productData;
-  if (typeof shippingDetails === "boolean") return null;
-
-  // State for temporary product images
-  const [variantImages, setVariantImages] =
-    useState<ProductVariantImage[]>(images);
-
-  // useState hook to manage the active image being displayed, initialized to the first image in the array
+  // Move ALL hooks to the top, before any conditional returns
+  const [variantImages, setVariantImages] = useState<ProductVariantImage[]>([]);
   const [activeImage, setActiveImage] = useState<ProductVariantImage | null>(
-    images[0]
+    null
   );
-
-  // Initialize the default product data for the cart item
-  const data: CartProductType = {
-    productId: productData.productId,
-    variantId: productData.variantId,
-    productSlug: productData.productSlug,
-    variantSlug: productData.variantSlug,
-    name: productData.name,
-    variantName: productData.variantName,
-    image: productData.images[0].url,
-    variantImage: productData.variantImage,
-    quantity: 1,
-    price: 0,
-    sizeId: sizeId || "",
-    size: "",
-    stock: 1,
-    weight: productData.weight,
-    shippingMethod: shippingDetails.shippingFeeMethod,
-    shippingService: shippingDetails.shippingService,
-    shippingFee: shippingDetails.shippingFee,
-    extraShippingFee: shippingDetails.extraShippingFee,
-    deliveryTimeMin: shippingDetails.deliveryTimeMin,
-    deliveryTimeMax: shippingDetails.deliveryTimeMax,
-    isFreeShipping: shippingDetails.isFreeShipping,
-  };
-
-  // useState hook to manage the product's state in the cart
   const [productToBeAddedToCart, setProductToBeAddedToCart] =
-    useState<CartProductType>(data);
-
-  const { stock } = productToBeAddedToCart;
-
-  // Usestate hook to manage product validity to be added to cart
+    useState<CartProductType | null>(null);
   const [isProductValid, setIsProductValid] = useState<boolean>(false);
 
-  // Function to handle state changes for the product properties
-  const handleChange = (property: keyof CartProductType, value: any) => {
-    setProductToBeAddedToCart((prevProduct) => ({
-      ...prevProduct,
-      [property]: value,
-    }));
-  };
+  const addToCart = useCartStore((state) => state.addToCart);
+  const setCart = useCartStore((state) => state.setCart);
+  const cartItems = useFromStore(useCartStore, (state) => state.cart);
+
+  // Initialize product data after hooks
+  useEffect(() => {
+    if (!productData) return;
+
+    const data: CartProductType = {
+      productId: productData.productId,
+      variantId: productData.variantId,
+      productSlug: productData.productSlug,
+      variantSlug: productData.variantSlug,
+      name: productData.name,
+      variantName: productData.variantName,
+      image: productData.images[0]?.url || "",
+      variantImage: productData.variantImage,
+      quantity: 1,
+      price: 0,
+      sizeId: sizeId || "",
+      size: "",
+      stock: 1,
+      weight: productData.weight,
+      shippingMethod:
+        shippingDetails && typeof shippingDetails !== "boolean"
+          ? shippingDetails.shippingFeeMethod
+          : "",
+      shippingService:
+        shippingDetails && typeof shippingDetails !== "boolean"
+          ? shippingDetails.shippingService
+          : "",
+      shippingFee:
+        shippingDetails && typeof shippingDetails !== "boolean"
+          ? shippingDetails.shippingFee
+          : 0,
+      extraShippingFee:
+        shippingDetails && typeof shippingDetails !== "boolean"
+          ? shippingDetails.extraShippingFee
+          : 0,
+      deliveryTimeMin:
+        shippingDetails && typeof shippingDetails !== "boolean"
+          ? shippingDetails.deliveryTimeMin
+          : 0,
+      deliveryTimeMax:
+        shippingDetails && typeof shippingDetails !== "boolean"
+          ? shippingDetails.deliveryTimeMax
+          : 0,
+      isFreeShipping:
+        shippingDetails && typeof shippingDetails !== "boolean"
+          ? shippingDetails.isFreeShipping
+          : false,
+    };
+
+    setProductToBeAddedToCart(data);
+    setVariantImages(productData.images);
+    setActiveImage(productData.images[0] || null);
+  }, [productData, sizeId]);
+
+  // Extract shippingDetails safely
+  const shippingDetails = productData?.shippingDetails;
+
+  // Now place conditional returns after all hooks
+  if (!productData) return null;
+  if (typeof shippingDetails === "boolean") return null;
+  if (!productToBeAddedToCart) return null; // Add null check for initialized state
 
   useEffect(() => {
     const check = isProductValidToAdd(productToBeAddedToCart);
     setIsProductValid(check);
   }, [productToBeAddedToCart]);
 
-  // Get the store action to add items to cart
-  const addToCart = useCartStore((state) => state.addToCart);
-
-  // Get the set Cart action to update items in cart
-  const setCart = useCartStore((state) => state.setCart);
-
-  const cartItems = useFromStore(useCartStore, (state) => state.cart);
-
   // Keeping cart state updated
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
-      // Check if the "cart" key was changed in localStorage
       if (event.key === "cart") {
         try {
           const parsedValue = event.newValue
             ? JSON.parse(event.newValue)
             : null;
 
-          // Check if parsedValue and state are valid and then update the cart
           if (
             parsedValue &&
             parsedValue.state &&
@@ -116,41 +124,49 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
       }
     };
 
-    // Attach the event listener
     window.addEventListener("storage", handleStorageChange);
-
-    // Cleanup the event listener when the component unmounts
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, []);
+  }, [setCart]);
 
   // Add product to history
-  updateProductHistory(variantId);
+  useEffect(() => {
+    updateProductHistory(productData.variantId);
+  }, [productData.variantId]);
 
   const handleAddToCart = () => {
-    if (maxQty <= 0) return;
+    if (maxQty <= 0 || !productToBeAddedToCart) return;
     addToCart(productToBeAddedToCart);
     toast.success("Product added to cart successfully.");
   };
 
   const maxQty = useMemo(() => {
-    const search_product = cartItems?.find(
+    if (!cartItems || !productToBeAddedToCart)
+      return productToBeAddedToCart?.stock || 0;
+
+    const search_product = cartItems.find(
       (p) =>
-        p.productId === productId &&
-        p.variantId === variantId &&
-        p.sizeId === sizeId
+        p.productId === productToBeAddedToCart.productId &&
+        p.variantId === productToBeAddedToCart.variantId &&
+        p.sizeId === productToBeAddedToCart.sizeId
     );
     return search_product
       ? search_product.stock - search_product.quantity
-      : stock;
-  }, [cartItems, productId, variantId, sizeId, stock]);
+      : productToBeAddedToCart.stock;
+  }, [cartItems, productToBeAddedToCart]);
 
   // Set view cookie
-  setCookie(`viewedProduct_${productId}`, "true", {
-    maxAge: 3600,
-    path: "/",
-  });
+  useEffect(() => {
+    if (productData?.productId) {
+      setCookie(`viewedProduct_${productData.productId}`, "true", {
+        maxAge: 3600,
+        path: "/",
+      });
+    }
+  }, [productData?.productId]);
+
+  const { productId, variantId, images, sizes } = productData;
 
   return (
     <div className="relative">

@@ -22,7 +22,7 @@ export async function getWalletTransactions(params?: {
   page?: number;
   per_page?: number;
   type?: string;
-}): Promise<{ data: WalletTransaction[]; meta: any }> {
+}): Promise<{ data: WalletTransaction[] }> {
   const response = await axios.get("/api/v1/transactions", { params });
   return response.data;
 }

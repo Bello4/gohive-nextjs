@@ -13,6 +13,34 @@ export enum OrderStatus {
   OnHold = "OnHold",
 }
 
+export type OrderFulltType = {
+  shippingAddress: {
+    user: {
+      name: string;
+      id: string;
+      email: string;
+      picture: string;
+      type: string | null;
+      address: string | null;
+      state: string | null;
+      country: string | null;
+      passport: string | null;
+      phone: string | null;
+      nin: string | null;
+      password: string | null;
+      createdAt: Date;
+      updatedAt: Date;
+    };
+  };
+};
+
+export type OrderTableFilter =
+  | ""
+  | "unpaid"
+  | "toShip"
+  | "shipped"
+  | "delivered";
+
 export type StoreOrderType = {
   id: number;
   coupon?: {

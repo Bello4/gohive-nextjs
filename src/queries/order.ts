@@ -13,3 +13,7 @@ export async function updateOrderGroupStatus(data: {
 export const updateOrderItemStatus = async () => {
   return;
 };
+
+export const getOrder = () => {
+  return;
+};

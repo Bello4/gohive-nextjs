@@ -12,7 +12,7 @@ interface Props {
 }
 
 const Select: FC<Props> = ({
-  name,
+  // name,
   onChange,
   options,
   value,

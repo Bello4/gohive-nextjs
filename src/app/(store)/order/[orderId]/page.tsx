@@ -1,10 +1,10 @@
-import OrderInfoCard from "@/components/store/cards/order/info";
-import OrderTotalDetailsCard from "@/components/store/cards/order/total";
-import OrderUserDetailsCard from "@/components/store/cards/order/user";
-import Header from "@/components/store/layout/header/header";
-import OrderGroupsContainer from "@/components/store/order-page/groups-container";
-import OrderHeader from "@/components/store/order-page/header";
-import OrderPayment from "@/components/store/order-page/payment";
+import OrderInfoCard from "@/components/home/cards/order/info";
+import OrderTotalDetailsCard from "@/components/home/cards/order/total";
+import OrderUserDetailsCard from "@/components/home/cards/order/user";
+import Header from "@/components/home/layout/header/header";
+import OrderGroupsContainer from "@/components/home/order-page/groups-container";
+import OrderHeader from "@/components/home/order-page/header";
+import OrderPayment from "@/components/home/order-page/payment";
 import { Separator } from "@/components/ui/separator";
 import { getOrder } from "@/queries/order";
 import { redirect } from "next/navigation";

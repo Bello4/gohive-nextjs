@@ -1,7 +1,7 @@
 import axios from "@/lib/axios";
 // lib/api/wishlist.ts
 import {
-  AddToWishlistRequest,
+  // AddToWishlistRequest,
   WishlistItem,
   AddToWishlistResponse,
 } from "@/types/wishlist";

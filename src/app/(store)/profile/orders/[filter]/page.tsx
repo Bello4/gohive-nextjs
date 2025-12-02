@@ -1,5 +1,5 @@
-import OrdersTable from "@/components/store/profile/orders/orders-table";
-import { OrderTableFilter } from "@/lib/types";
+import OrdersTable from "@/components/home/profile/orders/orders-table";
+import { OrderTableFilter } from "@/types/order";
 import { getUserOrders } from "@/queries/profile";
 
 export default async function ProfileFilteredOrderPage({

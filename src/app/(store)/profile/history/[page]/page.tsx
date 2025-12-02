@@ -1,6 +1,6 @@
 "use client";
-import Pagination from "@/components/store/shared/pagination";
-import ProductList from "@/components/store/shared/product-list";
+import Pagination from "@/components/home/shared/pagination";
+import ProductList from "@/components/home/shared/product-list";
 import { getProductsByIds } from "@/queries/product";
 import { useEffect, useState } from "react";
 

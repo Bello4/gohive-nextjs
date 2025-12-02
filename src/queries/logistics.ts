@@ -23,7 +23,7 @@ export async function getOrders(params?: {
   status?: string;
   page?: number;
   per_page?: number;
-}): Promise<{ data: OrderDetails[]; meta: any }> {
+}): Promise<{ data: OrderDetails[] }> {
   const response = await axios.get("/api/v1/dispatch-rides", { params });
   return response.data;
 }

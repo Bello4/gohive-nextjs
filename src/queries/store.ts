@@ -1,7 +1,7 @@
 import axios from "@/lib/axios";
 import { StoreOrderType } from "@/types/order";
 import { StoreStatus } from "@/types/store";
-import { ShippingRate } from "@/types/shippingrates";
+// import { ShippingRate } from "@/types/shippingrates";
 import { StoreDetails } from "@/types/store";
 import { FollowStoreResponse } from "@/types/store";
 
