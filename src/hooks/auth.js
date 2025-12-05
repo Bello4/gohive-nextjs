@@ -79,7 +79,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     setStatus(null);
 
     try {
-      const res = await axios.post("/login", props);
+      const res = await axios.post("api/v1/login", props);
 
       // Refresh user data
       await mutate();
