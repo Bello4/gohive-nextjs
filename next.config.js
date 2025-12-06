@@ -1,6 +1,7 @@
-import type { NextConfig } from "next";
+// import { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   /* config options here */
   reactStrictMode: true,
   swcMinify: true,
@@ -40,4 +41,4 @@ const nextConfig: NextConfig = {
 };
 
 // ✅ This is the important part - wrap your config with PWA
-export default nextConfig;
+module.exports = nextConfig;
