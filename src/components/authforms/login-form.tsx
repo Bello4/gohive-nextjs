@@ -108,6 +108,7 @@ export function LoginForm({
     // Clear previous errors
     setApiError(null);
     setErrors([]);
+    setStatus(null);
 
     // Validate form
     if (!validateForm()) {
@@ -117,31 +118,29 @@ export function LoginForm({
     setIsSubmitting(true);
 
     try {
-      // Call login function
-      await login({
+      // Call login function - token-based, NO setErrors or setStatus
+      const result = await login({
         email,
         password,
-        setErrors: (errorObj: any) => {
-          // Convert error object to array
-          if (errorObj && typeof errorObj === "object") {
-            const errorArray: string[] = [];
-            Object.values(errorObj).forEach((error: any) => {
-              if (Array.isArray(error)) {
-                errorArray.push(...error);
-              } else if (typeof error === "string") {
-                errorArray.push(error);
-              }
-            });
-            setErrors(errorArray);
-          }
-        },
-        setStatus,
       });
 
-      // If we get here, login was successful
-      // The hook's useEffect will handle redirect via redirectIfAuthenticated
+      console.log("✅ Login successful:", result);
+
+      // Check if we got a token
+      if (result?.access_token || result?.data?.access_token) {
+        // Small delay to let SWR update
+        setTimeout(() => {
+          // Check if we should redirect
+          if (window.location.pathname === "/login") {
+            router.push("/");
+          }
+        }, 300);
+      } else {
+        console.warn("⚠️ Login succeeded but no token returned");
+        setApiError("Login succeeded but no authentication token received.");
+      }
     } catch (err: any) {
-      console.error("Login failed:", err);
+      console.error("❌ Login failed:", err);
 
       // Handle API errors
       if (err.response?.data?.errors) {

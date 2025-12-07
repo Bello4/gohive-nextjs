@@ -76,21 +76,28 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
   // ========== LOGIN (Token-based) ==========
   const login = async (props) => {
     try {
+      console.log("🔐 Sending login request...");
+
       const res = await axios.post("/api/v1/login", props);
 
       // Store tokens
       if (res.data.access_token) {
-        setTokens(
-          res.data.access_token,
-          res.data.refresh_token || res.data.access_token
-        );
+        setTokens(res.data.access_token, res.data.refresh_token);
+
+        // Force update axios header immediately
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${res.data.access_token}`;
       }
 
-      // Refresh user data
+      // Refresh user data - important to wait for this
+      console.log("🔄 Mutating user data...");
       await mutate();
 
+      console.log("🎉 Login process completed");
       return res.data;
     } catch (error) {
+      console.error("❌ Login error:", error.response?.data || error.message);
       throw error;
     }
   };
