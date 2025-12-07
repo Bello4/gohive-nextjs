@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/auth";
+import { useAuth } from "@/hooks/auth"; // Updated import
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,10 +20,20 @@ export function LoginForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
-  const { login } = useAuth({
-    middleware: "guest",
-    redirectIfAuthenticated: "/",
-  });
+
+  // Check if useAuth exists
+  let authHook;
+  try {
+    authHook = useAuth({
+      middleware: "guest",
+      redirectIfAuthenticated: "/",
+    });
+  } catch (error) {
+    console.error("useAuth hook not found:", error);
+    // Handle missing hook
+  }
+
+  const { login, isLoading: authLoading } = authHook || {};
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,18 +44,27 @@ export function LoginForm({
     password?: string;
   }>({});
   const [status, setStatus] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
-  // Handle router reset messages
+  // Handle URL reset messages
   useEffect(() => {
-    const resetMsg = (router as any)?.reset;
-    if (resetMsg?.length > 0 && errors.length === 0) {
-      setStatus(atob(resetMsg));
-    } else {
-      setStatus(null);
+    const urlParams = new URLSearchParams(window.location.search);
+    const resetParam = urlParams.get("reset");
+
+    if (resetParam) {
+      try {
+        const decodedMessage = atob(resetParam);
+        setStatus(decodedMessage);
+
+        // Clear the URL parameter
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      } catch (error) {
+        console.error("Failed to decode reset message:", error);
+      }
     }
-  }, [router, errors]);
+  }, []);
 
   // Email validation function
   const validateEmail = (email: string): boolean => {
@@ -78,6 +97,14 @@ export function LoginForm({
   const submitForm = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    // Check if login function exists
+    if (!login) {
+      setApiError(
+        "Authentication service unavailable. Please refresh the page."
+      );
+      return;
+    }
+
     // Clear previous errors
     setApiError(null);
     setErrors([]);
@@ -87,23 +114,46 @@ export function LoginForm({
       return;
     }
 
-    setIsLoading(true);
+    setIsSubmitting(true);
 
     try {
-      const data = await login({
+      // Call login function
+      await login({
         email,
         password,
-        setErrors,
+        setErrors: (errorObj: any) => {
+          // Convert error object to array
+          if (errorObj && typeof errorObj === "object") {
+            const errorArray: string[] = [];
+            Object.values(errorObj).forEach((error: any) => {
+              if (Array.isArray(error)) {
+                errorArray.push(...error);
+              } else if (typeof error === "string") {
+                errorArray.push(error);
+              }
+            });
+            setErrors(errorArray);
+          }
+        },
         setStatus,
       });
 
-      console.log("Login successful:", data);
-      // Router will handle redirect via the auth hook
+      // If we get here, login was successful
+      // The hook's useEffect will handle redirect via redirectIfAuthenticated
     } catch (err: any) {
       console.error("Login failed:", err);
 
       // Handle API errors
-      if (err.response?.data?.message) {
+      if (err.response?.data?.errors) {
+        // Laravel validation errors format
+        const errorMessages: string[] = [];
+        Object.values(err.response.data.errors).forEach((errorArray: any) => {
+          if (Array.isArray(errorArray)) {
+            errorMessages.push(...errorArray);
+          }
+        });
+        setErrors(errorMessages);
+      } else if (err.response?.data?.message) {
         setApiError(err.response.data.message);
       } else if (err.message) {
         setApiError(err.message);
@@ -111,7 +161,7 @@ export function LoginForm({
         setApiError("Login failed. Please try again.");
       }
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -141,6 +191,8 @@ export function LoginForm({
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  const isLoading = isSubmitting || authLoading;
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -274,7 +326,7 @@ export function LoginForm({
               {/* Submit Button */}
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || !login}
                 className="w-full bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:from-[#ff7539] hover:to-[#ff0a0a] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
                 {isLoading ? (

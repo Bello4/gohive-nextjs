@@ -3,187 +3,178 @@
 import useSWR from "swr";
 import axios from "@/lib/axios";
 import { useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
   const router = useRouter();
-  const params = useParams();
 
+  // Token management helpers
+  const setTokens = (accessToken, refreshToken = null) => {
+    localStorage.setItem("access_token", accessToken);
+    if (refreshToken) {
+      localStorage.setItem("refresh_token", refreshToken);
+    }
+    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+  };
+
+  const clearTokens = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    delete axios.defaults.headers.common["Authorization"];
+  };
+
+  const getToken = () => localStorage.getItem("access_token");
+
+  // SWR fetcher
+  const fetcher = async (url) => {
+    const token = getToken();
+
+    if (!token) {
+      throw new Error("No authentication token");
+    }
+
+    try {
+      const response = await axios.get(url);
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 401) {
+        clearTokens();
+      }
+      throw error;
+    }
+  };
+
+  // SWR hook
   const {
     data: user,
     error,
     mutate,
-  } = useSWR("/api/v1/user", () =>
-    axios
-      .get("/api/v1/user")
-      .then((res) => res.data)
-      .catch((error) => {
-        if (error.response.status !== 409) throw error;
+  } = useSWR(getToken() ? "/api/v1/user" : null, fetcher, {
+    revalidateOnFocus: false,
+    shouldRetryOnError: false,
+  });
 
-        router.push("/verify-email");
-      })
-  );
-
-  const csrf = () => axios.get("sanctum/csrf-cookie");
-
-  const register = async ({ setErrors, ...props }) => {
-    await csrf();
-
-    setErrors([]);
-
-    // axios
-    //   .post("/register", props)
-    //   .then(() => mutate())
-    //   .catch((error) => {
-    //     if (error.response.status !== 422) throw error;
-
-    //     setErrors(error.response.data.errors);
-    //   });
-
+  // ========== REGISTER (Token-based) ==========
+  const register = async (props) => {
     try {
-      const res = await axios.post("api/v1/register", props);
+      const res = await axios.post("/api/v1/register", props);
+
+      // Store token if returned
+      if (res.data.access_token) {
+        setTokens(res.data.access_token, res.data.refresh_token);
+      }
 
       // Refresh user data
       await mutate();
 
       return res.data;
     } catch (error) {
-      if (error.response?.status === 422) {
-        setErrors(error.response.data.errors);
-      } else {
-        throw error;
-      }
+      throw error;
     }
   };
 
-  // const login = async ({ setErrors, setStatus, ...props }) => {
-  //   await csrf();
-
-  //   setErrors([]);
-  //   setStatus(null);
-
-  //   axios
-  //     .post("/login", props)
-  //     .then(() => mutate())
-  //     .catch((error) => {
-  //       if (error.response.status !== 422) throw error;
-
-  //       setErrors(error.response.data.errors);
-  //     });
-  // };
-
-  const login = async ({ setErrors, setStatus, ...props }) => {
-    await csrf();
-
-    setErrors([]);
-    setStatus(null);
-
+  // ========== LOGIN (Token-based) ==========
+  const login = async (props) => {
     try {
-      const res = await axios.post("api/v1/login", props);
+      const res = await axios.post("/api/v1/login", props);
+
+      // Store tokens
+      if (res.data.access_token) {
+        setTokens(
+          res.data.access_token,
+          res.data.refresh_token || res.data.access_token
+        );
+      }
 
       // Refresh user data
       await mutate();
 
       return res.data;
     } catch (error) {
-      if (error.response?.status === 422) {
-        setErrors(error.response.data.errors);
-      } else {
-        throw error;
-      }
+      throw error;
     }
   };
 
-  const forgotPassword = async ({ setErrors, setStatus, email }) => {
-    await csrf();
-
-    setErrors([]);
-    setStatus(null);
-
-    axios
-      .post("api/v1/forgot-password", { email })
-      .then((response) => setStatus(response.data.status))
-      .catch((error) => {
-        if (error.response.status !== 422) throw error;
-
-        setErrors(error.response.data.errors);
-      });
-  };
-
-  // const resetPassword = async ({ setErrors, setStatus, ...props }) => {
-  //   await csrf();
-
-  //   setErrors([]);
-  //   setStatus(null);
-
-  //   axios
-  //     .post("api/v1/reset-password", { token: params.token, ...props })
-  //     .then((response) =>
-  //       router.push("/login?reset=" + btoa(response.data.status))
-  //     )
-  //     .catch((error) => {
-  //       if (error.response.status !== 422) throw error;
-
-  //       setErrors(error.response.data.errors);
-  //     });
-  // };
-  // hooks/useAuth.js
-  const resetPassword = async ({ setErrors, setStatus, ...props }) => {
-    await csrf();
-
-    setErrors([]);
-    setStatus(null);
-
-    // Make sure we're sending the token in the request
-    console.log("Sending reset password request with:", {
-      email: props.email,
-      token: props.token ? `${props.token.substring(0, 20)}...` : "missing",
-      hasPassword: !!props.password,
-      hasPasswordConfirmation: !!props.password_confirmation,
-    });
-
-    axios
-      .post("/api/v1/reset-password", props) // Just pass all props directly
-      .then((response) => {
-        console.log("Reset password success:", response.data);
-        router.push("/login?reset=" + btoa(response.data.status));
-      })
-      .catch((error) => {
-        console.error("Reset password error:", error.response?.data);
-        if (error.response?.status !== 422) throw error;
-
-        setErrors(error.response.data.errors);
-      });
-  };
-
-  const resendEmailVerification = ({ setStatus }) => {
-    axios
-      .post("/email/verification-notification")
-      .then((response) => setStatus(response.data.status));
-  };
-
+  // ========== LOGOUT ==========
   const logout = async () => {
-    if (!error) {
-      await axios.post("/logout").then(() => mutate());
+    try {
+      const token = getToken();
+      if (token) {
+        await axios.post("/api/v1/logout");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      clearTokens();
+      await mutate(null, false);
+      window.location.href = "/login";
+    }
+  };
+
+  // ========== FORGOT PASSWORD ==========
+  const forgotPassword = async ({ email }) => {
+    try {
+      const response = await axios.post("/api/v1/forgot-password", { email });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  // ========== RESET PASSWORD ==========
+  const resetPassword = async (props) => {
+    try {
+      const response = await axios.post("/api/v1/reset-password", props);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  // ========== RESEND VERIFICATION ==========
+  const resendEmailVerification = async () => {
+    try {
+      const response = await axios.post(
+        "/api/v1/email/verification-notification"
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  // ========== AUTH EFFECTS ==========
+  useEffect(() => {
+    const token = getToken();
+
+    if (middleware === "guest" && redirectIfAuthenticated && token && user) {
+      router.push(redirectIfAuthenticated);
     }
 
-    window.location.pathname = "/login";
-  };
+    if (middleware === "auth" && !token && user === undefined) {
+      router.push("/login");
+    }
+  }, [user, middleware, redirectIfAuthenticated, router]);
 
   useEffect(() => {
-    if (middleware === "guest" && redirectIfAuthenticated && user)
-      router.push(redirectIfAuthenticated);
-
-    if (middleware === "auth" && error) logout();
-  }, [user, error]);
+    if (error?.response?.status === 401) {
+      clearTokens();
+      if (middleware === "auth") {
+        router.push("/login");
+      }
+    }
+  }, [error, middleware, router]);
 
   return {
     user,
+    isLoading: !error && !user && getToken() !== null,
+    isAuthenticated: !!getToken() && !!user,
     register,
     login,
+    logout,
     forgotPassword,
     resetPassword,
     resendEmailVerification,
-    logout,
+    mutate,
   };
 };

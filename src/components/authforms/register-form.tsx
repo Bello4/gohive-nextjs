@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/auth";
+import { useAuth } from "@/hooks/auth"; // Updated import
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,10 +22,18 @@ export function RegisterForm({
 }: React.ComponentProps<"div">) {
   const router = useRouter();
 
-  const { register } = useAuth({
-    middleware: "guest",
-    redirectIfAuthenticated: "/",
-  });
+  // Check if useAuth exists
+  let authHook;
+  try {
+    authHook = useAuth({
+      middleware: "guest",
+      redirectIfAuthenticated: "/",
+    });
+  } catch (error) {
+    console.error("useAuth hook not found:", error);
+  }
+
+  const { register, isLoading: authLoading } = authHook || {};
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -40,18 +48,27 @@ export function RegisterForm({
   }>({});
   const [status, setStatus] = useState<string | null>(null);
   const [phone, setPhone] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
-  // Handle router reset messages
+  // Handle URL parameters for status messages
   useEffect(() => {
-    const resetMsg = (router as any)?.reset;
-    if (resetMsg?.length > 0 && errors.length === 0) {
-      setStatus(atob(resetMsg));
-    } else {
-      setStatus(null);
+    const urlParams = new URLSearchParams(window.location.search);
+    const successParam = urlParams.get("success");
+
+    if (successParam) {
+      try {
+        const decodedMessage = atob(successParam);
+        setStatus(decodedMessage);
+
+        // Clear the URL parameter
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+      } catch (error) {
+        console.error("Failed to decode success message:", error);
+      }
     }
-  }, [router, errors]);
+  }, []);
 
   // Email validation function
   const validateEmail = (email: string): boolean => {
@@ -61,8 +78,9 @@ export function RegisterForm({
 
   // Phone validation function
   const validatePhone = (phone: string): boolean => {
-    // Basic phone validation - you can enhance this based on your needs
-    return phone.length >= 10 && phone.length <= 15;
+    // Remove non-digits for validation
+    const digitsOnly = phone.replace(/\D/g, "");
+    return digitsOnly.length >= 10 && digitsOnly.length <= 15;
   };
 
   // Form validation
@@ -92,7 +110,7 @@ export function RegisterForm({
     if (!phone.trim()) {
       newErrors.phone = "Phone number is required";
     } else if (!validatePhone(phone)) {
-      newErrors.phone = "Please enter a valid phone number";
+      newErrors.phone = "Please enter a valid phone number (10-15 digits)";
     }
 
     // Password validation
@@ -112,6 +130,12 @@ export function RegisterForm({
   const submitForm = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    // Check if register function exists
+    if (!register) {
+      setApiError("Registration service unavailable. Please refresh the page.");
+      return;
+    }
+
     // Clear previous errors
     setApiError(null);
     setErrors([]);
@@ -121,35 +145,67 @@ export function RegisterForm({
       return;
     }
 
-    setIsLoading(true);
+    setIsSubmitting(true);
 
     try {
-      const data = await register({
+      // Call register function - token-based doesn't need setErrors/setStatus
+      const result = await register({
         name,
         email,
         phone,
         password,
-        setErrors,
-        setStatus,
       });
 
-      // console.log("Registration successful:", data);
-      // After successful registration
-      if (data.requires_verification) {
-        router.push(
-          `/verify?email=${encodeURIComponent(
-            data.user.email
-          )}&phone=${encodeURIComponent(data.user.phone)}`
-        );
+      console.log("Registration successful:", result);
+
+      // Check if we got a token
+      if (result?.access_token || result?.data?.access_token) {
+        // Success - store token is handled in the hook
+
+        // Check if verification is required
+        if (
+          result.requires_verification ||
+          result?.data?.requires_verification
+        ) {
+          const userData = result.user || result.data?.user;
+          if (userData) {
+            router.push(
+              `/verify?email=${encodeURIComponent(
+                userData.email
+              )}&phone=${encodeURIComponent(userData.phone)}`
+            );
+          } else {
+            router.push("/verify");
+          }
+        } else {
+          // Auto-logged in, redirect to home
+          router.push("/");
+        }
       } else {
-        router.push("/");
+        // Handle case where registration succeeded but no token returned
+        setStatus(
+          "Registration successful! Please check your email for verification."
+        );
+
+        // Redirect to login after 2 seconds
+        setTimeout(() => {
+          router.push("/login");
+        }, 2000);
       }
-      // Router will handle redirect via the auth hook
     } catch (err: any) {
       console.error("Registration failed:", err);
 
       // Handle API errors
-      if (err.response?.data?.message) {
+      if (err.response?.data?.errors) {
+        // Laravel validation errors format
+        const errorMessages: string[] = [];
+        Object.values(err.response.data.errors).forEach((errorArray: any) => {
+          if (Array.isArray(errorArray)) {
+            errorMessages.push(...errorArray);
+          }
+        });
+        setErrors(errorMessages);
+      } else if (err.response?.data?.message) {
         setApiError(err.response.data.message);
       } else if (err.message) {
         setApiError(err.message);
@@ -157,7 +213,7 @@ export function RegisterForm({
         setApiError("Registration failed. Please try again.");
       }
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -197,6 +253,8 @@ export function RegisterForm({
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  const isLoading = isSubmitting || authLoading;
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -410,7 +468,7 @@ export function RegisterForm({
               {/* Submit Button */}
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || !register}
                 className="w-full bg-gradient-to-r from-[#ff0a0a] to-[#ff7539] hover:from-[#ff7539] hover:to-[#ff0a0a] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
                 {isLoading ? (
