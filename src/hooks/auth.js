@@ -85,9 +85,9 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
         setTokens(res.data.access_token, res.data.refresh_token);
 
         // Force update axios header immediately
-        axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${res.data.access_token}`;
+        // axios.defaults.headers.common[
+        //   "Authorization"
+        // ] = `Bearer ${res.data.access_token}`;
       }
 
       // Refresh user data - important to wait for this
