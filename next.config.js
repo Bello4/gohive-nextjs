@@ -1,6 +1,6 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   /* config options here */
   reactStrictMode: true,
   // Environment variables that should be available at build time
@@ -39,4 +39,4 @@ const nextConfig: NextConfig = {
 };
 
 // ✅ This is the important part - wrap your config with PWA
-export default nextConfig;
+module.exports = nextConfig;
