@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, Mail, Phone, RotateCcw } from "lucide-react";
 import { showToast } from "nextjs-toast-notify";
+import { useAuth } from "@/hooks/auth";
+
 import {
   verifyCode,
   resendVerificationCode,
@@ -21,6 +23,10 @@ import {
 } from "@/queries/verification";
 
 export default function VerifyPage() {
+  const { user, isAuthenticated, needsVerification } = useAuth({
+    middleware: "auth", // Requires auth to access
+  });
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const [code, setCode] = useState(["", "", "", ""]);
@@ -29,6 +35,13 @@ export default function VerifyPage() {
   const [countdown, setCountdown] = useState(0);
   const [userEmail, setUserEmail] = useState("");
   const [userPhone, setUserPhone] = useState("");
+
+  useEffect(() => {
+    // If user is already verified, redirect home
+    if (user && !needsVerification) {
+      router.push("/");
+    }
+  }, [user, needsVerification, router]);
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 

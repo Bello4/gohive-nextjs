@@ -159,14 +159,11 @@ export function RegisterForm({
       console.log("Registration successful:", result);
 
       // Check if we got a token
-      if (result?.access_token || result?.data?.access_token) {
+      if (result?.accessToken || result?.data?.accessToken) {
         // Success - store token is handled in the hook
 
         // Check if verification is required
-        if (
-          result.requires_verification ||
-          result?.data?.requires_verification
-        ) {
+        if (result.requiresVerification || result?.data?.requiresVerification) {
           const userData = result.user || result.data?.user;
           if (userData) {
             router.push(
