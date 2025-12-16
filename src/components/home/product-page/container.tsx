@@ -22,7 +22,7 @@ interface Props {
 }
 
 const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
-  // Move ALL hooks to the top, before any conditional returns
+  // 1. ALL hooks must be at the top, unconditionally
   const [variantImages, setVariantImages] = useState<ProductVariantImage[]>([]);
   const [activeImage, setActiveImage] = useState<ProductVariantImage | null>(
     null
@@ -35,7 +35,10 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
   const setCart = useCartStore((state) => state.setCart);
   const cartItems = useFromStore(useCartStore, (state) => state.cart);
 
-  // Initialize product data after hooks
+  // Extract shippingDetails safely - moved before any hooks that use it
+  const shippingDetails = productData?.shippingDetails;
+
+  // Initialize product data
   useEffect(() => {
     if (!productData) return;
 
@@ -87,22 +90,17 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
     setProductToBeAddedToCart(data);
     setVariantImages(productData.images);
     setActiveImage(productData.images[0] || null);
-  }, [productData, sizeId]);
+  }, [productData, sizeId, shippingDetails]);
 
-  // Extract shippingDetails safely
-  const shippingDetails = productData?.shippingDetails;
-
-  // Now place conditional returns after all hooks
-  if (!productData) return null;
-  if (typeof shippingDetails === "boolean") return null;
-  if (!productToBeAddedToCart) return null; // Add null check for initialized state
-
+  // Check if product is valid - MUST be called unconditionally
   useEffect(() => {
-    const check = isProductValidToAdd(productToBeAddedToCart);
-    setIsProductValid(check);
+    if (productToBeAddedToCart) {
+      const check = isProductValidToAdd(productToBeAddedToCart);
+      setIsProductValid(check);
+    }
   }, [productToBeAddedToCart]);
 
-  // Keeping cart state updated
+  // Keeping cart state updated - MUST be called unconditionally
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
       if (event.key === "cart") {
@@ -130,16 +128,22 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
     };
   }, [setCart]);
 
-  // Add product to history
+  // Add product to history - MUST be called unconditionally
   useEffect(() => {
-    updateProductHistory(productData.variantId);
-  }, [productData.variantId]);
+    if (productData?.variantId) {
+      updateProductHistory(productData.variantId);
+    }
+  }, [productData?.variantId]);
 
-  const handleAddToCart = () => {
-    if (maxQty <= 0 || !productToBeAddedToCart) return;
-    addToCart(productToBeAddedToCart);
-    toast.success("Product added to cart successfully.");
-  };
+  // Set view cookie - MUST be called unconditionally
+  useEffect(() => {
+    if (productData?.productId) {
+      setCookie(`viewedProduct_${productData.productId}`, "true", {
+        maxAge: 3600,
+        path: "/",
+      });
+    }
+  }, [productData?.productId]);
 
   const maxQty = useMemo(() => {
     if (!cartItems || !productToBeAddedToCart)
@@ -156,16 +160,23 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
       : productToBeAddedToCart.stock;
   }, [cartItems, productToBeAddedToCart]);
 
-  // Set view cookie
-  useEffect(() => {
-    if (productData?.productId) {
-      setCookie(`viewedProduct_${productData.productId}`, "true", {
-        maxAge: 3600,
-        path: "/",
-      });
-    }
-  }, [productData?.productId]);
+  const handleAddToCart = () => {
+    if (maxQty <= 0 || !productToBeAddedToCart) return;
+    addToCart(productToBeAddedToCart);
+    toast.success("Product added to cart successfully.");
+  };
 
+  // I notice handleChange is referenced but not defined - you'll need to define it
+  const handleChange = () => {
+    // Define your handleChange logic here
+    console.log("handleChange called");
+  };
+
+  // 2. Only AFTER all hooks are called, you can have conditional returns
+  if (!productData) return null;
+  if (typeof shippingDetails === "boolean") return null;
+
+  // 3. Now render your component
   const { productId, variantId, images, sizes } = productData;
 
   return (
@@ -211,7 +222,7 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
                 {/* Action buttons */}
                 <div className="mt-5 bg-white bottom-0 pb-4 space-y-3 sticky">
                   {/* Qty selector */}
-                  {sizeId && (
+                  {productToBeAddedToCart && sizeId && (
                     <div className="w-full flex justify-end mt-4">
                       <QuantitySelector
                         productId={productToBeAddedToCart.productId}

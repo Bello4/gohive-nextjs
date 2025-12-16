@@ -75,7 +75,7 @@ export const usePaystackPayment = () => {
         email = data.sender.email;
 
         // Calculate order total amount
-        const deliveryFee = data.distance * 150;
+        const deliveryFee = Math.max(data.distance * 400, 1000);
         const insuranceFee = data.insurance
           ? (data.package.value || 0) * 0.02
           : 0;

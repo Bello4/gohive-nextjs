@@ -1,3 +1,4 @@
+// src/lib/axios.js
 import Axios from "axios";
 
 const axios = Axios.create({
@@ -10,11 +11,44 @@ const axios = Axios.create({
   // No withCredentials for token-based auth
 });
 
+// Helper function to safely access localStorage
+const getLocalStorageItem = (key) => {
+  if (typeof window !== "undefined") {
+    try {
+      return localStorage.getItem(key);
+    } catch (error) {
+      console.error(`Error accessing localStorage key "${key}":`, error);
+      return null;
+    }
+  }
+  return null;
+};
+
+const setLocalStorageItem = (key, value) => {
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.setItem(key, value);
+    } catch (error) {
+      console.error(`Error setting localStorage key "${key}":`, error);
+    }
+  }
+};
+
+const removeLocalStorageItem = (key) => {
+  if (typeof window !== "undefined") {
+    try {
+      localStorage.removeItem(key);
+    } catch (error) {
+      console.error(`Error removing localStorage key "${key}":`, error);
+    }
+  }
+};
+
 // Add a request interceptor to inject the token
 axios.interceptors.request.use(
   (config) => {
-    // Get token from localStorage or cookies
-    const token = localStorage.getItem("access_token");
+    // Get token from localStorage (only on client side)
+    const token = getLocalStorageItem("access_token");
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -39,7 +73,7 @@ axios.interceptors.response.use(
 
       try {
         // Attempt to refresh token
-        const refreshToken = localStorage.getItem("refresh_token");
+        const refreshToken = getLocalStorageItem("refresh_token");
 
         if (refreshToken) {
           const response = await axios.post("/api/v1/refresh-token", {
@@ -49,8 +83,8 @@ axios.interceptors.response.use(
           const { access_token, refresh_token } = response.data;
 
           // Store new tokens
-          localStorage.setItem("access_token", access_token);
-          localStorage.setItem("refresh_token", refresh_token);
+          setLocalStorageItem("access_token", access_token);
+          setLocalStorageItem("refresh_token", refresh_token);
 
           // Update the Authorization header
           originalRequest.headers.Authorization = `Bearer ${access_token}`;
@@ -60,9 +94,14 @@ axios.interceptors.response.use(
         }
       } catch (refreshError) {
         // Refresh failed, logout user
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        window.location.href = "/login";
+        removeLocalStorageItem("access_token");
+        removeLocalStorageItem("refresh_token");
+
+        // Only redirect on client side
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
+
         return Promise.reject(refreshError);
       }
     }

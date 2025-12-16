@@ -99,11 +99,6 @@ export default function DispatchRidePage() {
         if (response.success) {
           console.log("Order created successfully:", response.data);
 
-          // Show success message
-          alert(
-            `Order created successfully! Your order number is: ${response.data.order_number}`
-          );
-
           // Close modal
           setShowSummary(false);
 

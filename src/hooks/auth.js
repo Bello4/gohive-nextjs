@@ -134,7 +134,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 
       // Refresh user data - important to wait for this
       console.log("🔄 Mutating user data...");
-      await mutate();
+      await mutate("/api/v1/user");
 
       console.log("🎉 Login process completed");
       return res.data;
