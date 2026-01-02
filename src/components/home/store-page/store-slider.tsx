@@ -60,7 +60,7 @@ export default function StoreHorizontalList() {
             <span className="text-xs text-gray-700 ml-1">
               {store.average_rating
                 ? Number(store.average_rating).toFixed(2)
-                : "0.00"}
+                : "0.0"}
             </span>
           </div>
         </div>
