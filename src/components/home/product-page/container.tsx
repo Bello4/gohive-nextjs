@@ -172,7 +172,7 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
             setActiveImage={setActiveImage}
           />
           {/* Shipping details - buy actions buttons */}
-          <div className="w-[390px]">
+          <div className="w-full">
             <div className="z-20">
               <div className="bg-white border rounded-md overflow-hidden overflow-y-auto p-4 pb-0">
                 {typeof shippingDetails !== "boolean" && (
@@ -237,7 +237,7 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
           </div>
         </div>
       </div>
-      <div className="w-[calc(100%-390px)] mt-6 pb-16">{children}</div>
+      <div className="w-full mt-6 pb-16">{children}</div>
     </div>
   );
 };
