@@ -54,7 +54,7 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
     sizeId: sizeId || "",
     size: "",
     stock: 1,
-    weight: productData.variantsInfo.weight,
+    weight: productData.weight,
     shippingMethod: productData.shippingDetails.shippingFeeMethod,
     shippingService: productData.shippingDetails.shippingService,
     shippingFee: productData.shippingDetails.shippingFee,

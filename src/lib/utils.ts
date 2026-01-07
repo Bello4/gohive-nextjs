@@ -124,7 +124,7 @@ export const isProductValidToAdd = (product: CartProductType): boolean => {
     shippingMethod,
     //shippingService,
     // variantImage,
-    weight,
+    // weight,
     deliveryTimeMin,
     deliveryTimeMax,
   } = product;
@@ -144,7 +144,7 @@ export const isProductValidToAdd = (product: CartProductType): boolean => {
     !sizeId || // Ensure sizeId is not empty
     // !size || // Ensure size is not empty
     stock <= 0 ||
-    weight <= 0 || // Weight should be <= 0
+    // weight <= 0 || // Weight should be <= 0
     !shippingMethod ||
     // !variantImage ||
     deliveryTimeMin < 0 ||
