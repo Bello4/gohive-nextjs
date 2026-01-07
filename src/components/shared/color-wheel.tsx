@@ -1,5 +1,4 @@
-import { Color } from "@prisma/client";
-
+import { Color } from "@/types/color";
 type ColorWheelProps = {
   colors: Partial<Color>[];
   size: number; // Size of the circle in pixels

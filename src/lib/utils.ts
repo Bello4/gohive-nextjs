@@ -110,6 +110,7 @@ export const isProductValidToAdd = (product: CartProductType): boolean => {
     variantId,
     productSlug,
     variantSlug,
+    variantUrl,
     name,
     variantName,
     image,
@@ -121,8 +122,8 @@ export const isProductValidToAdd = (product: CartProductType): boolean => {
     // shippingFee,
     // extraShippingFee,
     shippingMethod,
-    // shippingService,
-    variantImage,
+    //shippingService,
+    // variantImage,
     weight,
     deliveryTimeMin,
     deliveryTimeMax,
@@ -134,17 +135,18 @@ export const isProductValidToAdd = (product: CartProductType): boolean => {
     !variantId ||
     !productSlug ||
     !variantSlug ||
+    // !variantUrl ||
     !name ||
     !variantName ||
     !image ||
     quantity <= 0 ||
-    price <= 0 ||
+    // price <= 0 ||
     !sizeId || // Ensure sizeId is not empty
-    !size || // Ensure size is not empty
+    // !size || // Ensure size is not empty
     stock <= 0 ||
     weight <= 0 || // Weight should be <= 0
     !shippingMethod ||
-    !variantImage ||
+    // !variantImage ||
     deliveryTimeMin < 0 ||
     deliveryTimeMax < deliveryTimeMin // Ensure delivery times are valid
   ) {

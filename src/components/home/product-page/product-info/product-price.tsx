@@ -76,7 +76,7 @@ const ProductPrice: FC<Props> = ({ sizeId, sizes, isCard, handleChange }) => {
   }
 
   // Scenario 2: SizeId passed, find the specific size and return its details
-  const selectedSize = sizes.find((size) => size.id === sizeId);
+  const selectedSize = sizes.find((size) => String(size.id) === String(sizeId));
 
   if (!selectedSize) {
     return <></>;

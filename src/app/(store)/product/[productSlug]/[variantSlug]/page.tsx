@@ -1,5 +1,5 @@
 import StoreCard from "@/components/home/cards/store-card";
-import CategoriesHeader from "@/components/home/layout/categories-header/categories-header";
+// import CategoriesHeader from "@/components/home/layout/categories-header/categories-header";
 import Header from "@/components/home/layout/header/header";
 import ProductPageContainer from "@/components/home/product-page/container";
 import ProductDescription from "@/components/home/product-page/product-description";
@@ -15,13 +15,13 @@ import { notFound, redirect } from "next/navigation";
 interface PageProps {
   params: { productSlug: string; variantSlug: string };
   searchParams: {
-    size?: string;
+    sizes?: string;
   };
 }
 
 export default async function ProductVariantPage({
   params: { productSlug, variantSlug },
-  searchParams: { size: sizeId },
+  searchParams: { sizes: sizeId },
 }: PageProps) {
   // Fetch product data based on the product slug and variant slug
   const productData = await getProductPageData(productSlug, variantSlug);
@@ -34,12 +34,14 @@ export default async function ProductVariantPage({
 
   // Extract the available sizes for the product variant
   const { sizes } = productData;
-
+  console.log("size -->", sizeId);
   // If the size is provided in the URL
   if (sizeId) {
     // Check if the provided sizeId is valid by comparing with available sizes
-    const isValidSize = sizes.some((size) => size.id === sizeId);
-
+    // const isValidSize = sizes.some((size) => size.id === sizeId);
+    const isValidSize = sizes.some(
+      (size) => String(size.id) === String(sizeId)
+    );
     // If the sizeId is not valid, redirect to the same product page without the size parameter
     if (!isValidSize) {
       return redirect(`/product/${productSlug}/${variantSlug}`);
@@ -63,7 +65,8 @@ export default async function ProductVariantPage({
     reviews,
   } = productData;
 
-  console.log("this -->", variantsInfo);
+  console.log("this -->", reviewsStatistics);
+
   // Add safety checks
   if (!category || !category.url) {
     console.error("Category or category URL is missing:", category);

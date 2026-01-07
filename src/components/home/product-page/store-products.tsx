@@ -1,5 +1,5 @@
 "use client";
-import { ProductType } from "@/lib/types";
+import { ProductType } from "@/types/product";
 import { getProducts } from "@/queries/product";
 import { FC, useEffect, useState } from "react";
 import ProductList from "../shared/product-list";

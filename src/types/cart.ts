@@ -23,30 +23,53 @@
 // };
 
 // types/cart.ts
-export interface CartProductType {
+// export interface CartProductType {
+//   productId: string;
+//   variantId: string;
+//   sizeId: string;
+//   quantity: number;
+//   productSlug?: string;
+//   variantSlug?: string;
+//   sku?: string;
+//   name?: string;
+//   variantName?: string;
+//   image?: string;
+//   variantImage?: string;
+//   stock?: number;
+//   weight?: number;
+//   shippingMethod?: string;
+//   size?: string;
+//   price?: number;
+//   shippingService?: string;
+//   shippingFee?: number;
+//   extraShippingFee?: number;
+//   deliveryTimeMin?: number;
+//   deliveryTimeMax?: number;
+//   isFreeShipping?: boolean;
+// }
+export type CartProductType = {
   productId: string;
   variantId: string;
+  productSlug: string;
+  variantSlug: string;
+  name: string;
+  variantName: string;
+  image: string;
+  variantImage: string;
   sizeId: string;
+  size: string;
   quantity: number;
-  productSlug?: string;
-  variantSlug?: string;
-  sku?: string;
-  name?: string;
-  variantName?: string;
-  image?: string;
-  variantImage?: string;
-  stock?: number;
-  weight?: number;
-  shippingMethod?: string;
-  size?: string;
-  price?: number;
-  shippingService?: string;
-  shippingFee?: number;
-  extraShippingFee?: number;
-  deliveryTimeMin?: number;
-  deliveryTimeMax?: number;
-  isFreeShipping?: boolean;
-}
+  price: number;
+  stock: number;
+  weight: number;
+  shippingMethod: string;
+  shippingService: string;
+  shippingFee: number;
+  extraShippingFee: number;
+  deliveryTimeMin: number;
+  deliveryTimeMax: number;
+  isFreeShipping: boolean;
+};
 
 export interface UpdateCartResponse {
   success: boolean;

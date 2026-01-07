@@ -2,6 +2,7 @@ import { ShippingFeeMethod } from "./shippingmethod";
 import { Review } from "./review";
 import { Spec } from "./spec";
 import { Color } from "./color";
+import { Size } from "./size";
 import { Question } from "./question";
 
 export type SimpleProduct = {
@@ -136,7 +137,7 @@ export enum ProductStatus {
   AwaitingPickup = "AwaitingPickup",
 }
 
-export interface Size {
+export interface ProductSize {
   id: string;
   size: string;
   price: number;
@@ -202,6 +203,7 @@ export type CartProductType = {
   productId: string;
   variantId: string;
   productSlug: string;
+  variantUrl: string;
   variantSlug: string;
   name: string;
   variantName: string;
@@ -272,6 +274,11 @@ export interface ProductPageData {
   variantId: string;
   productSlug: string;
   variantSlug: string;
+  variantUrl: string;
+  sku: string;
+  colors: Color[];
+  isSale: boolean;
+  saleEndDate: string | null;
   name: string;
   description: string;
   variantDescription: string;

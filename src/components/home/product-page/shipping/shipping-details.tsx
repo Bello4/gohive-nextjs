@@ -64,7 +64,7 @@ const ShippingDetails: FC<Props> = ({ shippingDetails, quantity, weight }) => {
                 <span>
                   Delivery to <span>{countryName}</span>
                 </span>
-                <span>&nbsp;for ${shippingTotal}</span>
+                <span>&nbsp;for ₦{shippingTotal}</span>
               </span>
             )}
           </div>

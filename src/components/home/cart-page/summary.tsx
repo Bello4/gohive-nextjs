@@ -43,7 +43,7 @@ const CartSummary: FC<Props> = ({ cartItems, shippingFees }) => {
         <h3 className="flex-1 w-0 min-w-0 text-right">
           <span className="px-0.5 text-black">
             <div className="text-black text-lg inline-block break-all">
-              ${subtotal.toFixed(2)}
+              ₦{subtotal.toFixed(2)}
             </div>
           </span>
         </h3>
@@ -55,7 +55,7 @@ const CartSummary: FC<Props> = ({ cartItems, shippingFees }) => {
         <h3 className="flex-1 w-0 min-w-0 text-right">
           <span className="px-0.5 text-black">
             <div className="text-black text-lg inline-block break-all">
-              +${shippingFees.toFixed(2)}
+              +₦{shippingFees.toFixed(2)}
             </div>
           </span>
         </h3>
@@ -67,7 +67,7 @@ const CartSummary: FC<Props> = ({ cartItems, shippingFees }) => {
         <h3 className="flex-1 w-0 min-w-0 text-right">
           <span className="px-0.5 text-black">
             <div className="text-black text-lg inline-block break-all">
-              +$0.00
+              +₦0.00
             </div>
           </span>
         </h3>
@@ -79,7 +79,7 @@ const CartSummary: FC<Props> = ({ cartItems, shippingFees }) => {
         <h3 className="flex-1 w-0 min-w-0 text-right">
           <span className="px-0.5 text-black">
             <div className="text-black text-lg inline-block break-all">
-              ${total.toFixed(2)}
+              ₦{total.toFixed(2)}
             </div>
           </span>
         </h3>
@@ -89,7 +89,7 @@ const CartSummary: FC<Props> = ({ cartItems, shippingFees }) => {
           {loading ? (
             <PulseLoader size={5} color="#fff" />
           ) : (
-            <span>Checkout ({cartItems.length})</span>
+            <span className=" text-black">Checkout ({cartItems.length})</span>
           )}
         </Button>
       </div>

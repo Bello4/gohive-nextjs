@@ -66,7 +66,7 @@ const PlaceOrderCard: FC<Props> = ({
         {coupon && (
           <Info
             title={`Coupon (${coupon.code}) (-${coupon.discount}%)`}
-            text={`-$${discountedAmount.toFixed(2)}`}
+            text={`-₦${discountedAmount.toFixed(2)}`}
           />
         )}
         <Info title="Total" text={`+${total.toFixed(2)}`} isBold noBorder />

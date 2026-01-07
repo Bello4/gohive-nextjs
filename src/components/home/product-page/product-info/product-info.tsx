@@ -1,5 +1,5 @@
 "use client";
-import { CartProductType, ProductPageDataType } from "@/lib/types";
+import { CartProductType, ProductPageData } from "@/types/product";
 import Image from "next/image";
 import Link from "next/link";
 import { Dispatch, FC, SetStateAction } from "react";
@@ -14,10 +14,10 @@ import ProductVariantSelector from "./variant-selector";
 import SizeSelector from "./size-selector";
 import ProductAssurancePolicy from "./assurance-policy";
 import { ProductVariantImage } from "@/types/product";
-import ProductWatch from "./product-watch";
+// import ProductWatch from "./product-watch";
 
 interface Props {
-  productData: ProductPageDataType;
+  productData: ProductPageData;
   quantity?: number;
   sizeId: string | undefined;
   handleChange: (property: keyof CartProductType, value: any) => void;
@@ -137,15 +137,15 @@ const ProductInfo: FC<Props> = ({
         )}
       </div>
       {/* Product live watchers count */}
-      <ProductWatch productId={variantId} />
+      {/* <ProductWatch productId={variantId} /> */}
       <Separator className="mt-2" />
       {/* Color wheel - variant switcher */}
       <div className="mt-4 space-y-2">
         <div className="relative flex items-center justify-between text-main-primary font-bold">
-          {/* <span className="flex items-center gap-x-2">
+          <span className="flex items-center gap-x-2">
             {colors.length > 1 ? "Colors" : "Color"}
             <ColorWheel colors={colors} size={25} />
-          </span> */}
+          </span>
         </div>
         <div className="mt-4">
           {variantsInfo.length > 0 && (

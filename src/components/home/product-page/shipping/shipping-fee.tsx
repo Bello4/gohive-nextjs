@@ -51,7 +51,7 @@ const ProductShippingFee: FC<Props> = ({
                     Fee per item
                   </td>
                   <td className="w-full bg-gray-50 px-2 py-0.5 rounded-sm">
-                    ${fee}
+                    ₦{fee}
                   </td>
                 </tr>
               ) : (
@@ -64,7 +64,7 @@ const ProductShippingFee: FC<Props> = ({
                       Fee for First Item
                     </td>
                     <td className="w-full bg-gray-50 px-2 py-0.5 rounded-sm">
-                      ${fee}
+                      ₦{fee}
                     </td>
                   </tr>
 
@@ -76,7 +76,7 @@ const ProductShippingFee: FC<Props> = ({
                       Fee for Each Additional Item
                     </td>
                     <td className="w-full bg-gray-50 px-2 py-0.5 rounded-sm ">
-                      ${extraFee}
+                      ₦{extraFee}
                     </td>
                   </tr>
                 </div>
@@ -94,12 +94,12 @@ const ProductShippingFee: FC<Props> = ({
                 <td className="w-full bg-black text-white px-1 py-1">
                   {quantity === 1 || fee === extraFee ? (
                     <span>
-                      ${fee} (fee) x {quantity} (items) = ${fee * quantity}
+                      ₦{fee} (fee) x {quantity} (items) = ₦{fee * quantity}
                     </span>
                   ) : (
                     <span>
-                      ${fee} (first item) + {quantity - 1} (additional items) x
-                      ${extraFee} = ${fee + extraFee * (quantity - 1)}
+                      ₦{fee} (first item) + {quantity - 1} (additional items) x
+                      ₦{extraFee} = ${fee + extraFee * (quantity - 1)}
                     </span>
                   )}
                 </td>
@@ -131,7 +131,7 @@ const ProductShippingFee: FC<Props> = ({
                   Fee per kg (1kg = 2,205lbs)
                 </td>
                 <td className="w-full bg-gray-50 px-2 py-0.5 rounded-sm">
-                  ${fee}
+                  ₦{fee}
                 </td>
               </tr>
             </thead>
@@ -153,7 +153,7 @@ const ProductShippingFee: FC<Props> = ({
               <tr className="flex gap-x-1 text-xs px-4 mt-1 text-center font-semibold">
                 <td className="w-full bg-black text-white px-1 py-1">
                   <span>
-                    ${fee} (fee) x {weight}kg (weight) x {quantity} (items) = $
+                    ₦{fee} (fee) x {weight}kg (weight) x {quantity} (items) = ₦
                     {(fee * weight * quantity).toFixed(2)}
                   </span>
                 </td>
@@ -185,7 +185,7 @@ const ProductShippingFee: FC<Props> = ({
                   Fee
                 </td>
                 <td className="w-full bg-gray-50 px-2 py-0.5 rounded-sm">
-                  ${fee}
+                  ₦{fee}
                 </td>
               </tr>
             </thead>
@@ -199,7 +199,7 @@ const ProductShippingFee: FC<Props> = ({
               </tr>
               <tr className="flex gap-x-1 text-xs px-4 mt-1 text-center font-semibold">
                 <td className="w-full bg-black text-white px-1 py-1">
-                  <span>${fee} (quantity doesn't affect shipping fee.)</span>
+                  <span>₦{fee} (quantity doesn't affect shipping fee.)</span>
                 </td>
               </tr>
             </tbody>

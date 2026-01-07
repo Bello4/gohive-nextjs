@@ -4,8 +4,8 @@ import {
   ReviewsFiltersType,
   ReviewsOrderType,
   ReviewWithImageType,
-  VariantInfoType,
 } from "@/types/review";
+import { VariantInfoType } from "@/types/variants";
 import { FC, useEffect, useState } from "react";
 import RatingCard from "../../cards/product-rating";
 import RatingStatisticsCard from "../../cards/rating-statistics";

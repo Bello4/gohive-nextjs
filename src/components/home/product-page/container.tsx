@@ -1,5 +1,6 @@
 "use client";
 import { CartProductType, ProductPageData } from "@/types/product";
+import { ApiSize } from "@/types/size";
 import { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import ProductSwiper from "./product-swiper";
 import ProductInfo from "./product-info/product-info";
@@ -22,93 +23,88 @@ interface Props {
 }
 
 const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
-  // 1. ALL hooks must be at the top, unconditionally
-  const [variantImages, setVariantImages] = useState<ProductVariantImage[]>([]);
+  // If there is no product data available, render nothing (null)
+  if (!productData) return null;
+  const { productId, variantId, variantUrl, images, shippingDetails, sizes } =
+    productData;
+  if (typeof shippingDetails === "boolean") return null;
+
+  // State for temporary product images
+  const [variantImages, setVariantImages] =
+    useState<ProductVariantImage[]>(images);
+
+  // useState hook to manage the active image being displayed, initialized to the first image in the array
   const [activeImage, setActiveImage] = useState<ProductVariantImage | null>(
-    null
+    images[0]
   );
+
+  // Initialize the default product data for the cart item
+  const data: CartProductType = {
+    productId: productData.productId,
+    variantId: productData.variantId,
+    productSlug: productData.productSlug,
+    variantSlug: productData.variantSlug,
+    variantUrl: productData.variantUrl,
+    name: productData.name,
+    variantName: productData.variantName,
+    image: productData.images[0].url,
+    variantImage: productData.variantImage,
+    quantity: 1,
+    price: 0,
+    sizeId: sizeId || "",
+    size: "",
+    stock: 1,
+    weight: productData.variantsInfo.weight,
+    shippingMethod: productData.shippingDetails.shippingFeeMethod,
+    shippingService: productData.shippingDetails.shippingService,
+    shippingFee: productData.shippingDetails.shippingFee,
+    extraShippingFee: productData.shippingDetails.extraShippingFee,
+    deliveryTimeMin: productData.shippingDetails.deliveryTimeMin,
+    deliveryTimeMax: productData.shippingDetails.deliveryTimeMax,
+    isFreeShipping: productData.shippingDetails.isFreeShipping,
+  };
+
+  // useState hook to manage the product's state in the cart
   const [productToBeAddedToCart, setProductToBeAddedToCart] =
-    useState<CartProductType | null>(null);
+    useState<CartProductType>(data);
+
+  const { stock } = productToBeAddedToCart;
+
+  // Usestate hook to manage product validity to be added to cart
   const [isProductValid, setIsProductValid] = useState<boolean>(false);
 
-  const addToCart = useCartStore((state) => state.addToCart);
-  const setCart = useCartStore((state) => state.setCart);
-  const cartItems = useFromStore(useCartStore, (state) => state.cart);
+  // Function to handle state changes for the product properties
+  const handleChange = (property: keyof CartProductType, value: any) => {
+    setProductToBeAddedToCart((prevProduct) => ({
+      ...prevProduct,
+      [property]: value,
+    }));
+  };
 
-  // Extract shippingDetails safely - moved before any hooks that use it
-  const shippingDetails = productData?.shippingDetails;
-
-  // Initialize product data
   useEffect(() => {
-    if (!productData) return;
-
-    const data: CartProductType = {
-      productId: productData.productId,
-      variantId: productData.variantId,
-      productSlug: productData.productSlug,
-      variantSlug: productData.variantSlug,
-      name: productData.name,
-      variantName: productData.variantName,
-      image: productData.images[0]?.url || "",
-      variantImage: productData.variantImage,
-      quantity: 1,
-      price: 0,
-      sizeId: sizeId || "",
-      size: "",
-      stock: 1,
-      weight: productData.weight,
-      shippingMethod:
-        shippingDetails && typeof shippingDetails !== "boolean"
-          ? shippingDetails.shippingFeeMethod
-          : "",
-      shippingService:
-        shippingDetails && typeof shippingDetails !== "boolean"
-          ? shippingDetails.shippingService
-          : "",
-      shippingFee:
-        shippingDetails && typeof shippingDetails !== "boolean"
-          ? shippingDetails.shippingFee
-          : 0,
-      extraShippingFee:
-        shippingDetails && typeof shippingDetails !== "boolean"
-          ? shippingDetails.extraShippingFee
-          : 0,
-      deliveryTimeMin:
-        shippingDetails && typeof shippingDetails !== "boolean"
-          ? shippingDetails.deliveryTimeMin
-          : 0,
-      deliveryTimeMax:
-        shippingDetails && typeof shippingDetails !== "boolean"
-          ? shippingDetails.deliveryTimeMax
-          : 0,
-      isFreeShipping:
-        shippingDetails && typeof shippingDetails !== "boolean"
-          ? shippingDetails.isFreeShipping
-          : false,
-    };
-
-    setProductToBeAddedToCart(data);
-    setVariantImages(productData.images);
-    setActiveImage(productData.images[0] || null);
-  }, [productData, sizeId, shippingDetails]);
-
-  // Check if product is valid - MUST be called unconditionally
-  useEffect(() => {
-    if (productToBeAddedToCart) {
-      const check = isProductValidToAdd(productToBeAddedToCart);
-      setIsProductValid(check);
-    }
+    const check = isProductValidToAdd(productToBeAddedToCart);
+    setIsProductValid(check);
   }, [productToBeAddedToCart]);
 
-  // Keeping cart state updated - MUST be called unconditionally
+  // Get the store action to add items to cart
+  const addToCart = useCartStore((state) => state.addToCart);
+
+  // Get the set Cart action to update items in cart
+  const setCart = useCartStore((state) => state.setCart);
+
+  const cartItems = useFromStore(useCartStore, (state) => state.cart);
+
+  // Keeping cart state updated
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
+      // Check if the "cart" key was changed in localStorage
       if (event.key === "cart") {
         try {
           const parsedValue = event.newValue
             ? JSON.parse(event.newValue)
             : null;
 
+          // Check if parsedValue and state are valid and then update the cart
           if (
             parsedValue &&
             parsedValue.state &&
@@ -122,62 +118,41 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
       }
     };
 
+    // Attach the event listener
     window.addEventListener("storage", handleStorageChange);
+
+    // Cleanup the event listener when the component unmounts
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, [setCart]);
+  }, []);
 
-  // Add product to history - MUST be called unconditionally
-  useEffect(() => {
-    if (productData?.variantId) {
-      updateProductHistory(productData.variantId);
-    }
-  }, [productData?.variantId]);
-
-  // Set view cookie - MUST be called unconditionally
-  useEffect(() => {
-    if (productData?.productId) {
-      setCookie(`viewedProduct_${productData.productId}`, "true", {
-        maxAge: 3600,
-        path: "/",
-      });
-    }
-  }, [productData?.productId]);
-
-  const maxQty = useMemo(() => {
-    if (!cartItems || !productToBeAddedToCart)
-      return productToBeAddedToCart?.stock || 0;
-
-    const search_product = cartItems.find(
-      (p) =>
-        p.productId === productToBeAddedToCart.productId &&
-        p.variantId === productToBeAddedToCart.variantId &&
-        p.sizeId === productToBeAddedToCart.sizeId
-    );
-    return search_product
-      ? search_product.stock - search_product.quantity
-      : productToBeAddedToCart.stock;
-  }, [cartItems, productToBeAddedToCart]);
+  // Add product to history
+  updateProductHistory(variantId);
 
   const handleAddToCart = () => {
-    if (maxQty <= 0 || !productToBeAddedToCart) return;
+    if (maxQty <= 0) return;
     addToCart(productToBeAddedToCart);
     toast.success("Product added to cart successfully.");
   };
 
-  // I notice handleChange is referenced but not defined - you'll need to define it
-  const handleChange = () => {
-    // Define your handleChange logic here
-    console.log("handleChange called");
-  };
+  const maxQty = useMemo(() => {
+    const search_product = cartItems?.find(
+      (p) =>
+        p.productId === productId &&
+        p.variantId === variantId &&
+        p.sizeId === sizeId
+    );
+    return search_product
+      ? search_product.stock - search_product.quantity
+      : stock;
+  }, [cartItems, productId, variantId, sizeId, stock]);
 
-  // 2. Only AFTER all hooks are called, you can have conditional returns
-  if (!productData) return null;
-  if (typeof shippingDetails === "boolean") return null;
-
-  // 3. Now render your component
-  const { productId, variantId, images, sizes } = productData;
+  // Set view cookie
+  setCookie(`viewedProduct_${productId}`, "true", {
+    maxAge: 3600,
+    path: "/",
+  });
 
   return (
     <div className="relative">
@@ -222,7 +197,7 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
                 {/* Action buttons */}
                 <div className="mt-5 bg-white bottom-0 pb-4 space-y-3 sticky">
                   {/* Qty selector */}
-                  {productToBeAddedToCart && sizeId && (
+                  {sizeId && (
                     <div className="w-full flex justify-end mt-4">
                       <QuantitySelector
                         productId={productToBeAddedToCart.productId}

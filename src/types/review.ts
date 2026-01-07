@@ -1,35 +1,47 @@
 import { User } from "./user";
 import { Color } from "./color";
-import { Size } from "./product";
+import { Size } from "./size";
 import { ProductVariantImage } from "./product";
 
 export interface Review {
+  size: string;
   id: string;
-  variant: string;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
   review: string;
+  variant: string;
   rating: number;
   color: string;
-  size: string;
   quantity: string;
   likes: number;
-  userId: string;
   productId: string;
 }
 export interface ReviewImage {
   id: string;
+  createdAt: Date;
+  updatedAt: Date;
   url: string;
   alt: string;
   reviewId: string;
 }
 
+export type RatingStatistics = {
+  rating: number;
+  numReviews: number;
+  percentage: number;
+};
+
 export type RatingStatisticsType = {
-  ratingStatistics: {
-    rating: number;
-    numReviews: number | null;
-    percentage: number;
-  }[];
+  ratingStatistics: RatingStatistics[];
   reviewsWithImagesCount: number;
   totalReviews: number;
+  ratingDistribution: {
+    [key: number]: {
+      count: number;
+      percentage: number;
+    };
+  };
 };
 
 export type ReviewsFiltersType = {
@@ -41,16 +53,6 @@ export type ReviewsOrderType = {
   orderBy: "latest" | "oldest" | "highest";
 };
 
-export type VariantInfoType = {
-  variantName: string;
-  variantSlug: string;
-  variantImage: string;
-  variantUrl: string;
-  images: ProductVariantImage[];
-  sizes: Size[];
-  colors: Color[];
-};
-
 export interface ReviewUser {
   id: string;
   name: string;
@@ -58,16 +60,16 @@ export interface ReviewUser {
   picture?: string;
 }
 
-export interface Review {
-  id: string;
-  rating: number;
-  title?: string;
-  comment?: string;
-  createdAt: string;
-  updatedAt: string;
-  user: ReviewUser;
-  images: ReviewImage[];
-}
+// export interface Review {
+//   id: string;
+//   rating: number;
+//   title?: string;
+//   comment?: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   user: ReviewUser;
+//   images: ReviewImage[];
+// }
 
 export interface ReviewFilters {
   rating?: number;
@@ -103,7 +105,13 @@ export type ReviewDetailsType = {
   color: string;
 };
 
-export type ReviewWithImageType = Review & {
+// export type ReviewWithImageType = Review & {
+//   images: ReviewImage[];
+//   user: User;
+// };
+
+export type ReviewWithImageType = {
+  review: Review;
   images: ReviewImage[];
   user: User;
 };
