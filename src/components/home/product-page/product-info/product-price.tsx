@@ -101,7 +101,7 @@ const ProductPrice: FC<Props> = ({ sizeId, sizes, isCard, handleChange }) => {
       </div>
       {selectedSize.price !== discountedPrice && (
         <span className="text-[#999] inline-block text-xl font-normal leading-6 mr-2 line-through">
-          ₦{selectedSize.price.toFixed(2)}
+          ₦{Number(selectedSize.price).toFixed(2)}
         </span>
       )}
       {selectedSize.discount > 0 && (
