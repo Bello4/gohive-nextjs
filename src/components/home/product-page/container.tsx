@@ -141,7 +141,7 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
       (p) =>
         p.productId === productId &&
         p.variantId === variantId &&
-        p.sizeId === sizeId
+        String(p.sizeId) === String(sizeId)
     );
     return search_product
       ? search_product.stock - search_product.quantity
