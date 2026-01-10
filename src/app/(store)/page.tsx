@@ -4,6 +4,7 @@ import HomeMainSwiper from "@/components/home/subhome/main/home-swiper";
 import HomeUserCard from "@/components/home/subhome/main/user/user";
 import DispatchMenu from "@/components/home/layout/categories-header/dispatch-menu";
 import StoreSlider from "@/components/home/store-page/store-slider";
+// import AppMenu from "@/components/home/layout/categories-header/app-menu-card";
 
 export default async function Home() {
   return (
@@ -50,8 +51,8 @@ export default async function Home() {
             </div>
 
             <DispatchMenu />
-            <StoreSlider />
             {/* <AppMenu /> */}
+            <StoreSlider />
             <div className="mt-10 space-y-10">
               {/* <FeaturedCategories categories={featuredCategories} /> */}
               {/* <div>
