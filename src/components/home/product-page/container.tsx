@@ -25,8 +25,7 @@ interface Props {
 const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
   // If there is no product data available, render nothing (null)
   if (!productData) return null;
-  const { productId, variantId, variantUrl, images, shippingDetails, sizes } =
-    productData;
+  const { productId, variantId, images, shippingDetails, sizes } = productData;
   if (typeof shippingDetails === "boolean") return null;
 
   // State for temporary product images
@@ -44,7 +43,6 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
     variantId: productData.variantId,
     productSlug: productData.productSlug,
     variantSlug: productData.variantSlug,
-    variantUrl: productData.variantUrl,
     name: productData.name,
     variantName: productData.variantName,
     image: productData.images[0].url,
@@ -131,6 +129,7 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
   updateProductHistory(variantId);
 
   const handleAddToCart = () => {
+    console.log(cartItems);
     if (maxQty <= 0) return;
     addToCart(productToBeAddedToCart);
     toast.success("Product added to cart successfully.");

@@ -203,7 +203,7 @@ export type CartProductType = {
   productId: string;
   variantId: string;
   productSlug: string;
-  variantUrl: string;
+  // variantUrl: string;
   variantSlug: string;
   name: string;
   variantName: string;

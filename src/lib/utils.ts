@@ -110,14 +110,13 @@ export const isProductValidToAdd = (product: CartProductType): boolean => {
     variantId,
     productSlug,
     variantSlug,
-    variantUrl,
     name,
     variantName,
     image,
     quantity,
-    price,
+    // price,
     sizeId,
-    size,
+    // size,
     stock,
     // shippingFee,
     // extraShippingFee,
@@ -135,7 +134,6 @@ export const isProductValidToAdd = (product: CartProductType): boolean => {
     !variantId ||
     !productSlug ||
     !variantSlug ||
-    // !variantUrl ||
     !name ||
     !variantName ||
     !image ||
