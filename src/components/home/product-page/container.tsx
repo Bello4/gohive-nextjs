@@ -214,11 +214,11 @@ const ProductPageContainer: FC<Props> = ({ productData, sizeId, children }) => {
                     <span>Buy now</span>
                   </button>
                   <button
-                    disabled={!isProductValid}
+                    // disabled={!isProductValid}
                     className={cn(
                       "relative w-full py-2.5 min-w-20 bg-orange-border hover:bg-[#e4cdce] text-orange-hover h-11 rounded-3xl leading-6 inline-block font-bold whitespace-nowrap border border-orange-border cursor-pointer transition-all duration-300 ease-bezier-1 select-none",
                       {
-                        "cursor-not-allowed": !isProductValid || maxQty <= 0,
+                        "cursor-not-allowed": maxQty <= 0,
                       }
                     )}
                     onClick={() => handleAddToCart()}
