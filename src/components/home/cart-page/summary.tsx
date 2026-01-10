@@ -87,7 +87,7 @@ const CartSummary: FC<Props> = ({ cartItems, shippingFees }) => {
       <div className="my-2 5">
         <Button onClick={() => handleSaveCart()}>
           {loading ? (
-            <PulseLoader size={5} color="#fff" />
+            <PulseLoader size={5} color="#000" />
           ) : (
             <span className=" text-black">Checkout ({cartItems.length})</span>
           )}

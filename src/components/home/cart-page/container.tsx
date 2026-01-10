@@ -57,9 +57,9 @@ export default function CartContainer({
           {loading ? (
             <div>loading...</div>
           ) : (
-            <div className="bg-[#f5f5f5] min-h-[calc(100vh-65px)]">
-              <div className="max-w-[1200px] mx-auto py-6 flex">
-                <div className="min-w-0 flex-1">
+            <div className="bg-[#f5f5f5] min-h-[calc(100vh-65px)] mb-12">
+              <div className="max-w-[1200px] mx-auto py-6 flex flex-col lg:flex-row px-4 sm:px-6">
+                <div className="min-w-0 flex-1 order-2 lg:order-1">
                   {/* Cart header */}
                   <CartHeader
                     cartItems={cartItems}
@@ -83,15 +83,15 @@ export default function CartContainer({
                   </div>
                 </div>
                 {/* Cart side */}
-                <div className="sticky top-4 ml-5 w-[380px] max-h-max">
+                <div className="sticky top-4 w-full lg:w-[380px] max-h-max mb-6 lg:mb-0 lg:ml-5 order-1 lg:order-2">
                   {/* Cart summary */}
                   <CartSummary
                     cartItems={cartItems}
                     shippingFees={totalShipping}
                   />
-                  <div className="mt-2 p-4 bg-white px-6">
+                  {/* <div className="mt-2 p-4 bg-white px-6">
                     <FastDelivery />
-                  </div>
+                  </div> */}
                   <div className="mt-2 p-4 bg-white px-6">
                     <SecurityPrivacyCard />
                   </div>
