@@ -91,7 +91,7 @@ interface CategoryCardProps {
 
 function CategoryCard({ category }: CategoryCardProps) {
   const cardContent = (
-    <div className="text-[#222]  rounded-lg shadow-lg bg-white flex flex-col items-center relative">
+    <div className="text-[#222] border border-gray-200 rounded-lg shadow-lg bg-white flex flex-col items-center relative">
       {/* Lock Icon - only show if category is locked */}
       {category.locked && (
         <div className="w-full relative pt-1 right-0 left-0 top-0 z-10">

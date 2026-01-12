@@ -28,7 +28,7 @@ export default function StoreDEetails({
             alt={name}
             width={200}
             height={200}
-            className="w-25 h-25 object-cover rounded-full shadow-2xl"
+            className="w-25 h-25 object-cover border-gray-200 border rounded-full shadow-2xl"
           />
           <div className="pl-1 mb-5">
             <div className="flex items-center gap-x-1">

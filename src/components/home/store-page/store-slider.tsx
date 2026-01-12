@@ -30,7 +30,7 @@ export default function StoreHorizontalList() {
     <div className="flex-shrink-0 w-48  rounded-lg shadow-sm border bg-white border-gray-200 p-4 hover:shadow-md transition-shadow duration-200">
       <Link href={`/store/${store.url}`} className="block">
         {/* Store Logo */}
-        <div className="w-16 h-16 mx-auto mb-3 relative">
+        <div className="w-16 rounded-full h-16 border-gray-200 border mx-auto mb-3 relative">
           <Image
             src={store.logo || "/default-store-logo.png"}
             alt={store.name}
