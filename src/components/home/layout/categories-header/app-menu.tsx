@@ -24,10 +24,10 @@ export default async function AppMenu() {
   const categories: Category[] = [
     {
       id: "ride",
-      name: "Order Ride",
+      name: "Courier",
       icon: Rider,
       locked: false,
-      href: "/logistic/recieve",
+      href: "logistic/recieve",
     },
     {
       id: "restaurant",
@@ -41,36 +41,42 @@ export default async function AppMenu() {
       name: "Pharmacies",
       icon: Pharmacy,
       locked: false,
-      href: "/pharmacies",
-    },
-    {
-      id: "supermarket",
-      name: "SuperMarkets",
-      icon: SuperMarket,
-      locked: true,
-      href: "/stores?category=",
+      href: "/stores?category=pharmacies",
     },
     {
       id: "parcel",
-      name: "More",
-      icon: LogoImg,
+      name: "Gifts",
+      icon: SuperMarket,
       locked: false,
       href: "/stores",
     },
   ];
 
   return (
-    <div className="justify-center items-center mt-4">
-      <div className="text-center h-[32px] leading-[32px] text-[24px] font-extrabold text-[#222] flex justify-center">
-        <div className="h-[1px] flex-1 border-t-[2px] border-t-[hsla(0,0%,59.2%,.3)] my-4 mx-[14px]" />
-        <span>Categories</span>
-        <div className="h-[1px] flex-1 border-t-[2px] border-t-[hsla(0,0%,59.2%,.3)] my-4 mx-[14px]" />
+    <div className="justify-center  p-2 items-center mt-4">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold text-gray-900">Categories</h2>
+        <div></div>
+        {/* <Link
+          href="/stores"
+          className="px-4 py-2  text-gray-600 underline text-sm font-bold rounded-lg transition-colors duration-200"
+        >
+          View More
+        </Link> */}
       </div>
 
-      <div className="grid ml-6 grid-cols-4 text-center gap-2 justify-center items-center my-4">
+      {/* <div className="grid ml-6 grid-cols-4 text-center gap-2 justify-center items-center my-4">
         {categories.map((category) => (
           <CategoryCard key={category.id} category={category} />
         ))}
+      </div> */}
+
+      <div className="relative">
+        <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide">
+          {categories.map((category) => (
+            <CategoryCard key={category.id} category={category} />
+          ))}
+        </div>
       </div>
 
       {/* <AppMenuCard categories={categories} /> */}
@@ -85,7 +91,7 @@ interface CategoryCardProps {
 
 function CategoryCard({ category }: CategoryCardProps) {
   const cardContent = (
-    <div className="text-[#222] flex flex-col items-center relative">
+    <div className="text-[#222]  rounded-lg shadow-lg bg-white flex flex-col items-center relative">
       {/* Lock Icon - only show if category is locked */}
       {category.locked && (
         <div className="w-full relative pt-1 right-0 left-0 top-0 z-10">
@@ -94,22 +100,22 @@ function CategoryCard({ category }: CategoryCardProps) {
       )}
 
       {/* Category Icon */}
-      <div className="flex flex-col items-center shadow-sm bg-white rounded-full">
+      <div className="flex flex-col items-center  rounded-lg  ">
         <div
-          className={`h-[65px] w-[65px] cursor-pointer flex items-center justify-center ${
+          className={`h-[75px] w-[98px] cursor-pointer flex items-center justify-center ${
             category.locked ? "opacity-50" : ""
           }`}
         >
           <Image
             src={category.icon}
             alt={category.name}
-            className="w-[40px] h-[40px]"
+            className="w-[85px] h-[65px]"
           />
         </div>
       </div>
 
       {/* Category Name */}
-      <div className="text-xs text-center font-bold text-gray-900 mt-1">
+      <div className="text-xs px-2 text-center font-bold text-gray-900 mt-1">
         {category.name}
       </div>
     </div>

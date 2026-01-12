@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Category } from "@prisma/client";
+import { Category } from "@/types/category";
 import Image from "next/image";
 import Link from "next/link";
 

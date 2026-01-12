@@ -27,7 +27,7 @@ export default function StoreHorizontalList() {
   };
 
   const StoreCard = ({ store }: { store: Store }) => (
-    <div className="flex-shrink-0 w-48 bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow duration-200">
+    <div className="flex-shrink-0 w-48  rounded-lg shadow-sm border bg-white border-gray-200 p-4 hover:shadow-md transition-shadow duration-200">
       <Link href={`/store/${store.url}`} className="block">
         {/* Store Logo */}
         <div className="w-16 h-16 mx-auto mb-3 relative">
