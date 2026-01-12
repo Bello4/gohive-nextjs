@@ -17,8 +17,8 @@ export default function Header() {
               <Logo width="50%" height="20px" />
             </Link>
             <div className="flex lg:hidden">
-              <UserMenu />
               <Cart />
+              <UserMenu />
             </div>
           </div>
           {/* <Search /> */}
@@ -28,8 +28,8 @@ export default function Header() {
             <DownloadApp />
           </div> */}
           {/* <CountryLanguageCurrencySelector userCountry={userCountry} /> */}
-          <UserMenu />
           <Cart />
+          <UserMenu />
         </div>
       </div>
     </div>
