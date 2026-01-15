@@ -80,6 +80,7 @@ function useOrderDetails(orderId: number) {
     fetchOrder();
   }, [orderId]);
 
+  console.log(data);
   return { data, isLoading, error };
 }
 

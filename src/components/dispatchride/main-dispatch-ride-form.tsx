@@ -270,7 +270,7 @@ export default function DispatchRideForm({
                 {Math.ceil(duration)} min
               </p>
               <p className="text-xs text-green-600 mt-1">
-                Delivery fee: ₦{Math.max(distance * 400, 1000).toFixed(0)}
+                Delivery fee: ₦{Math.max(distance * 200, 1000).toFixed(0)}
               </p>
             </div>
           )}
@@ -353,7 +353,7 @@ export default function DispatchRideForm({
             <div className="flex justify-between">
               <span className="text-gray-600">Delivery Fee:</span>
               <span className="font-semibold">
-                ₦{Math.max(distance * 400, 1000).toFixed(0)}
+                ₦{Math.max(distance * 200, 1000).toFixed(0)}
               </span>
             </div>
             {insurance && (
@@ -369,7 +369,7 @@ export default function DispatchRideForm({
               <span className="text-lg font-bold text-orange-600">
                 ₦
                 {Math.max(
-                  distance * 400 +
+                  distance * 200 +
                     (insurance ? (packageDetails.value || 0) * 0.02 : 0),
                   1000
                 ).toFixed(0)}
