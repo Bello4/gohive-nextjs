@@ -109,7 +109,7 @@ function ChatbotPage({ params }: { params: Promise<{ id: number }> }) {
     const message = formMessage;
     form.reset();
 
-    if (!user.data.name) {
+    if (!user?.data?.name) {
       return;
     }
 
@@ -160,7 +160,7 @@ function ChatbotPage({ params }: { params: Promise<{ id: number }> }) {
           // ...(token && { "X-Auth-Token": token }),
         },
         body: JSON.stringify({
-          name: user.data.name,
+          name: user?.data?.name,
           chatsessionid: chatbotSession?.id,
           chatbotid: id,
           content: message,
