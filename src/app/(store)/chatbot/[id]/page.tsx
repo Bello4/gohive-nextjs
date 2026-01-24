@@ -185,9 +185,11 @@ function ChatbotPage({ params }: { params: Promise<{ id: number }> }) {
   }
 
   return (
-    <div className="h-dvh ">
+    <div className="h-dvh flex flex-col ">
       <Header />
-      <Messages messages={messages} />
+      <div className="flex-1 overflow-y-auto pb-24">
+        <Messages messages={messages} />
+      </div>
 
       <Form {...form}>
         <form
