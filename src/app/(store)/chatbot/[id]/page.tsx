@@ -29,6 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 // Schema
 import { ChatbotMeassageFormSchema } from "@/lib/schemas";
+import { SendHorizontal } from "lucide-react";
 
 function ChatbotPage({ params }: { params: Promise<{ id: number }> }) {
   const { id } = React.use(params);
@@ -185,40 +186,49 @@ function ChatbotPage({ params }: { params: Promise<{ id: number }> }) {
   }
 
   return (
-    <div className="h-dvh flex flex-col">
-      <div className="sticky top-0 z-50">
+    <div className="relative min-h-screen">
+      {/* Fixed Header - won't disappear when keyboard opens */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b">
         <Header />
       </div>
 
+      {/* Messages Container - scrollable with proper padding */}
+      <div className="pt-16 pb-24 overflow-y-auto h-screen">
+        <Messages messages={messages} />
+      </div>
+
+      {/* Fixed Input Form - stays above keyboard */}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex items-start fixed inset-x-0  bottom-0 z-50 space-x-4 drop-shadow-lg p-4 bg-gray-100 rounded-full m-3"
+          className="fixed bottom-0 left-0 right-0 z-50 p-3 bg-white dark:bg-gray-900 border-t"
         >
-          <FormField
-            control={form.control}
-            name="message"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel hidden>Message</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Type a message..."
-                    {...field}
-                    className="p-6 rounded-full"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            disabled={form.formState.isSubmitting || !form.formState.isValid}
-            type="submit"
-            className="h-full p-3 rounded-full"
-          >
-            Send
-          </Button>
+          <div className="flex items-center space-x-2 max-w-3xl mx-auto">
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel hidden>Message</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Type a message..."
+                      {...field}
+                      className="flex-1 py-6 rounded-full bg-gray-50 dark:bg-gray-800 border-0 focus-visible:ring-2"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              disabled={form.formState.isSubmitting || !form.formState.isValid}
+              type="submit"
+              className="h-12 w-12 p-0 rounded-full shrink-0"
+            >
+              <SendHorizontal className="h-5 w-5" />
+            </Button>
+          </div>
         </form>
       </Form>
     </div>
