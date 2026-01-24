@@ -52,6 +52,7 @@ export async function POST(req: NextRequest) {
       .join(" + ");
 
     console.log(systemPrompt);
+    const username = name.replace(/\s+/g, ""); // "silveterandew"
 
     const messages: ChatCompletionMessageParam[] = [
       {
@@ -62,7 +63,7 @@ export async function POST(req: NextRequest) {
       ...formattedPreviousMessages,
       {
         role: "user",
-        name: name,
+        name: username,
         content: content,
       },
     ];
