@@ -8,14 +8,14 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useEffect, useRef } from "react";
 
-// export function Messages({ messages = [] }: { messages?: MessageType[] }) {
-function Messages({
-  messages,
-  chatBotName,
-}: {
-  messages: Message[];
-  chatBotName: string;
-}) {
+export function Messages({ messages = [] }: { messages?: Message[] }) {
+  //function Messages({
+  //   messages,
+  //   chatBotName,
+  // }: {
+  //   messages: Message[];
+  //   chatBotName: string;
+  // }) {
   const ref = useRef<HTMLDivElement>(null);
   const path = usePathname();
   const isReviewPage = path.includes("review-session");

@@ -187,7 +187,7 @@ function ChatbotPage({ params }: { params: Promise<{ id: number }> }) {
   return (
     <div className="min-h-screen ">
       <Header />
-      <Messages messages={messages} chatBotName={botData?.name} />
+      <Messages messages={messages} />
 
       <Form {...form}>
         <form
