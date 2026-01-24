@@ -185,43 +185,41 @@ function ChatbotPage({ params }: { params: Promise<{ id: number }> }) {
   }
 
   return (
-    <div className="min-h-screen ">
+    <div className="h-dvh ">
       <Header />
       <Messages messages={messages} />
 
-      <div className="h-dvh">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex items-start fixed inset-x-0  bottom-0 z-50 space-x-4 drop-shadow-lg p-4 bg-gray-100 rounded-full m-3"
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex items-start fixed inset-x-0  bottom-0 z-50 space-x-4 drop-shadow-lg p-4 bg-gray-100 rounded-full m-3"
+        >
+          <FormField
+            control={form.control}
+            name="message"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel hidden>Message</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Type a message..."
+                    {...field}
+                    className="p-6 rounded-full"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            disabled={form.formState.isSubmitting || !form.formState.isValid}
+            type="submit"
+            className="h-full p-3 rounded-full"
           >
-            <FormField
-              control={form.control}
-              name="message"
-              render={({ field }) => (
-                <FormItem className="flex-1">
-                  <FormLabel hidden>Message</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Type a message..."
-                      {...field}
-                      className="p-6 rounded-full"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button
-              disabled={form.formState.isSubmitting || !form.formState.isValid}
-              type="submit"
-              className="h-full p-3 rounded-full"
-            >
-              Send
-            </Button>
-          </form>
-        </Form>
-      </div>
+            Send
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 }
