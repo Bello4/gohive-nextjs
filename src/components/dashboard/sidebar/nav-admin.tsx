@@ -41,6 +41,11 @@ export function AdminSidebar({
     navMain: [
       { title: "Dashboard", url: "/dashboard/admin", icon: DashboardIcon },
       { title: "Users", url: "/dashboard/admin/users", icon: Users2Icon },
+      {
+        title: "ChatBot",
+        url: "/dashboard/admin/chatbot",
+        icon: CategoriesIcon,
+      },
       { title: "Dispatch", url: "/dashboard/admin/dispatch", icon: DriverIcon },
       { title: "Stores", url: "/dashboard/admin/stores", icon: StoreIcon },
       {

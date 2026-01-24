@@ -97,7 +97,7 @@ export default function DataTable<TData, TValue>({
                       subheading={subheading || ""}
                     >
                       {modalChildren}
-                    </CustomModal>
+                    </CustomModal>,
                   );
               }}
             >
@@ -107,7 +107,7 @@ export default function DataTable<TData, TValue>({
           {newTabLink && (
             <Link href={newTabLink}>
               <Button variant="outline">
-                <FilePlus2 className="me-1" /> Create in new page
+                <FilePlus2 className="me-1" /> Create New
               </Button>
             </Link>
           )}
@@ -129,7 +129,7 @@ export default function DataTable<TData, TValue>({
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                       </TableHead>
                     );
@@ -155,7 +155,7 @@ export default function DataTable<TData, TValue>({
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}

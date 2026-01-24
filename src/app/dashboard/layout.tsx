@@ -7,6 +7,7 @@ import { SellerSidebar } from "@/components/dashboard/sidebar/nav-seller";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Loading from "@/components/shared/loading";
 import { useAuth } from "@/hooks/auth";
+import { Toaster } from "react-hot-toast";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { user } = useAuth({ middleware: "auth" });
@@ -37,6 +38,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       )} */}
 
       {children}
+      <Toaster position="top-center" />
     </SidebarProvider>
   );
 }

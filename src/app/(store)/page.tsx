@@ -55,25 +55,10 @@ export default async function Home() {
               <AppMenu />
             </div>
             <StoreSlider />
-            <div className="mt-10 space-y-10">
-              {/* <FeaturedCategories categories={featuredCategories} /> */}
-              {/* <div>
-                <div className="text-center h-[32px] leading-[32px] text-[24px] font-extrabold text-[#222] flex justify-center">
-                  <div className="h-[1px] flex-1 border-t-[2px] border-t-[hsla(0,0%,59.2%,.3)] my-4 mx-[14px]" />
-                  <span>More to love</span>
-                  <div className="h-[1px] flex-1 border-t-[2px] border-t-[hsla(0,0%,59.2%,.3)] my-4 mx-[14px]" />
-                </div>
-                <div className="mt-7 bg-white justify-center flex flex-wrap min-[1530px]:grid min-[1530px]:grid-cols-7 p-4 pb-16 rounded-md">
-                  {products.map((product, i) => (
-                    <ProductCard key={i} product={product} />
-                  ))}
-                </div>
-              </div> */}
-            </div>
           </div>
         </div>
       </main>
-      <MobileApp />
+      {/* <MobileApp /> */}
     </>
   );
 }

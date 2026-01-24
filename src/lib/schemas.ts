@@ -75,6 +75,56 @@ export const CategoryFormSchema = z.object({
   featured: z.boolean().default(false),
 });
 
+// Chatbot form schema
+export const ChatbotFormSchema = z.object({
+  name: z
+    .string({
+      required_error: "Chat Text name is required.",
+      invalid_type_error: "Bot mus text be a string.",
+    })
+    .min(2, { message: "Chat name must be at least 2 characters long." })
+    .max(80, { message: "Chat name cannot exceed 50 characters." })
+    .regex(/^[a-zA-Z0-9\s]+$/, {
+      message:
+        "Only letters, numbers, and spaces are allowed in the category name.",
+    }),
+  image: z
+    .object({
+      url: z.string(),
+    })
+    .array()
+    .length(1, "Choose a category image."),
+});
+
+export const ChatbotMeassageFormSchema = z.object({
+  message: z
+    .string({
+      required_error: "Chat Text name is required.",
+      invalid_type_error: "Bot mus text be a string.",
+    })
+    .min(2, { message: "Chat name must be at least 2 characters long." })
+    .max(80, { message: "Chat name cannot exceed 50 characters." })
+    .regex(/^[a-zA-Z0-9\s]+$/, {
+      message:
+        "Only letters, numbers, and spaces are allowed in the category name.",
+    }),
+});
+
+export const CharacteristicFormSchema = z.object({
+  content: z
+    .string({
+      required_error: "Chat content Text name is required.",
+      invalid_type_error: "content must text be a string.",
+    })
+    .min(2, { message: "Chat name must be at least 2 characters long." })
+    .max(1200, { message: "Chat name cannot exceed 1200 characters." }),
+  // .regex(/^[a-zA-Z0-9\s]+$/, {
+  //   message:
+  //     "Only letters, numbers, and spaces are allowed in the details name.",
+  // }),
+  chatbotId: z.number(),
+});
+
 // SubCategory schema
 export const SubCategoryFormSchema = z.object({
   name: z
@@ -284,7 +334,7 @@ export const ProductFormSchema = z.object({
         sizes.every((s) => s.size.length > 0 && s.price > 0 && s.quantity > 0),
       {
         message: "All size inputs must be filled correctly.",
-      }
+      },
     ),
   product_specs: z
     .object({
@@ -298,7 +348,7 @@ export const ProductFormSchema = z.object({
         product_specs.every((s) => s.name.length > 0 && s.value.length > 0),
       {
         message: "All product specs inputs must be filled correctly.",
-      }
+      },
     ),
   variant_specs: z
     .object({
@@ -312,7 +362,7 @@ export const ProductFormSchema = z.object({
         product_specs.every((s) => s.name.length > 0 && s.value.length > 0),
       {
         message: "All product variant specs inputs must be filled correctly.",
-      }
+      },
     ),
   questions: z
     .object({
@@ -326,7 +376,7 @@ export const ProductFormSchema = z.object({
         questions.every((q) => q.question.length > 0 && q.answer.length > 0),
       {
         message: "All product question inputs must be filled correctly.",
-      }
+      },
     ),
   isSale: z.boolean().default(false),
   saleEndDate: z.string().optional(),
@@ -341,7 +391,7 @@ export const ProductFormSchema = z.object({
     .optional()
     .refine(
       (ids) => ids?.every((item) => item.label && item.value),
-      "Each country must have a valid name and ID."
+      "Each country must have a valid name and ID.",
     )
     .default([]),
   shippingFeeMethod: z.enum(ShippingFeeMethod),
@@ -532,7 +582,7 @@ export const AddReviewSchema = z.object({
     .string()
     .min(
       10,
-      "Your feedback matters! Please write a review of minimum 10 characters."
+      "Your feedback matters! Please write a review of minimum 10 characters.",
     ), // Ensures review cannot be empty
   quantity: z.string().default("1"),
   images: z

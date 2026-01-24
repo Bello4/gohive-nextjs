@@ -34,11 +34,8 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     // Check various possible verification indicators
     return (
       userData.email_verified_at === null ||
-      userData.email_verified_at === undefined ||
-      userData.requires_verification === true ||
-      userData.verified === false ||
-      userData.is_verified === false ||
-      userData.status === "unverified"
+      userData.verification === "PENDING" ||
+      userData.status === "INACTIVE"
     );
   };
 
@@ -107,7 +104,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     } catch (error) {
       console.error(
         "❌ Registration error:",
-        error.response?.data || error.message
+        error.response?.data || error.message,
       );
       throw error;
     }
@@ -127,9 +124,8 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
       if (accessToken) {
         setTokens(accessToken, refreshToken);
         // Force update axios header immediately
-        axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${accessToken}`;
+        axios.defaults.headers.common["Authorization"] =
+          `Bearer ${accessToken}`;
       }
 
       // Refresh user data - important to wait for this
@@ -185,7 +181,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
   const resendEmailVerification = async () => {
     try {
       const response = await axios.post(
-        "/api/v1/email/verification-notification"
+        "/api/v1/email/verification-notification",
       );
       return response.data;
     } catch (error) {
@@ -226,7 +222,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
       // User is authenticated and verified, redirect to intended page
       console.log(
         "🚀 User authenticated & verified, redirecting to:",
-        redirectIfAuthenticated
+        redirectIfAuthenticated,
       );
       router.push(redirectIfAuthenticated);
       return;
