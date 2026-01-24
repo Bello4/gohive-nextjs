@@ -59,7 +59,7 @@ function ChatbotPage({ params }: { params: Promise<{ id: number }> }) {
 
         // 2. Create chatbot session (only if we have both user and chatbot)
         const createdData = await createChatbotSession({
-          userid: user.data.id, // Changed from user.data.id to user.id
+          userid: user?.data?.id, // Changed from user.data.id to user.id
           chatbotid: id,
         });
 
